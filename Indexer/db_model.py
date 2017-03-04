@@ -15,7 +15,7 @@ class Word(BaseModel):
     num_of_docs = IntegerField()
 
 
-class Topics(BaseModel):
+class Topic(BaseModel):
     id = IntegerField(unique=True)
     num_of_docs = IntegerField()
 
