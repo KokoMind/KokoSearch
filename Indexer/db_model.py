@@ -1,7 +1,5 @@
-from playhouse.sqlite_ext import SqliteExtDatabase
 from peewee import *
 from playhouse.sqlite_ext import SqliteExtDatabase
-import datetime
 
 db = SqliteExtDatabase('my_database.db')
 
@@ -18,6 +16,17 @@ class Word(BaseModel):
 class Topics(BaseModel):
     id = IntegerField(unique=True)
     num_of_docs = IntegerField( )
+
+class Document(BaseModel):
+    id = IntegerField(unique=True, primary_key=True)
+    url = CharField()
+
+class Word_Doc(BaseModel):
+    id = CharField(unique=True, primary_key=True)
+    doc_id = ForeignKeyField(Document, related_name='words')
+    word_id = ForeignKeyField(Word, related_name='docs')
+    pos = IntegerField()
+    neighbours = CharField()
 
 
 def create_data_base():
