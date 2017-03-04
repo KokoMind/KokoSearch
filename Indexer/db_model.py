@@ -28,12 +28,12 @@ class Document(BaseModel):
 
 
 class Word_Doc(BaseModel):
-    doc_id = ForeignKeyField(Document, related_name='doc')
-    word_id = ForeignKeyField(Word, related_name='word')
+    doc_id = ForeignKeyField(Document, related_name='doc_id')
+    word_id = ForeignKeyField(Word, related_name='word_id')
     pos = IntegerField()
     neighbours = CharField()
 
 
 def create_data_base():
     db.connect()
-    db.create_tables([Document, Word_Doc, Word, Topic])
+    db.create_tables([Document, Word_Doc, Word, Topic], safe=True)
