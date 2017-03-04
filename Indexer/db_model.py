@@ -35,4 +35,8 @@ class Word_Doc(BaseModel):
 
 def create_data_base():
     db.connect()
-    db.create_tables([Document, Word_Doc, Word, Topics])
+    db.create_tables([Document, Word_Doc, Word, Topic])
+
+
+
+create_data_base()
