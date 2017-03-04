@@ -10,23 +10,19 @@ class BaseModel(Model):
 
 
 class Word(BaseModel):
-    id = IntegerField(unique=True)
     word = CharField()
     num_of_docs = IntegerField()
 
 
 class Topic(BaseModel):
-    id = IntegerField(unique=True)
     num_of_docs = IntegerField()
 
 
 class Document(BaseModel):
-    id = IntegerField(unique=True, primary_key=True)
     url = CharField()
 
 
 class Word_Doc(BaseModel):
-    id = CharField(unique=True, primary_key=True)
     doc_id = ForeignKeyField(Document, related_name='words')
     word_id = ForeignKeyField(Word, related_name='docs')
     pos = IntegerField()
