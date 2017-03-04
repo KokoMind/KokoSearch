@@ -1,7 +1,7 @@
 from peewee import *
 from playhouse.sqlite_ext import SqliteExtDatabase
 
-db = SqliteExtDatabase('my_database.db')
+db = SqliteExtDatabase('Indexer_cache.db')
 
 
 class BaseModel(Model):

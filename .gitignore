@@ -90,3 +90,4 @@ ENV/
 
 .idea/*
 my_database.db
+Indexer_cache.db
