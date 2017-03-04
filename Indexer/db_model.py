@@ -20,19 +20,20 @@ class Topic(BaseModel):
 
 class Document(BaseModel):
     url = CharField()
+    c1 = ForeignKeyField(Topic, related_name='c1')
+    c2 = ForeignKeyField(Topic, related_name='c2')
+    c3 = ForeignKeyField(Topic, related_name='c3')
+    c4 = ForeignKeyField(Topic, related_name='c4')
+    c5 = ForeignKeyField(Topic, related_name='c5')
 
 
 class Word_Doc(BaseModel):
-    doc_id = ForeignKeyField(Document, related_name='words')
-    word_id = ForeignKeyField(Word, related_name='docs')
+    doc_id = ForeignKeyField(Document, related_name='doc_id')
+    word_id = ForeignKeyField(Word, related_name='word_id')
     pos = IntegerField()
     neighbours = CharField()
 
 
 def create_data_base():
     db.connect()
-    db.create_tables([Document, Word_Doc, Word, Topic])
-
-
-
-create_data_base()
+    db.create_tables([Document, Word_Doc, Word, Topic], safe=True)

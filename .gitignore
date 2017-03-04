@@ -89,3 +89,4 @@ ENV/
 .ropeproject
 
 .idea/*
+my_database.db
