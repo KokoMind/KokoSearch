@@ -13,6 +13,7 @@ class Crawled(BaseModel):
     url = CharField(unique=True)
     content = TextField()
     refresh = IntegerField()
+    indexed = BooleanField()
 
 
 class ToCrawl(BaseModel):
