@@ -1,5 +1,6 @@
 from Indexer.db_model import *
 from Indexer.utils import *
+from Crawler.db_model import *
 
 
 class InvertedIndexer:
@@ -15,10 +16,10 @@ class InvertedIndexer:
     def _get_next_page(self):
         """get next page from the crawler database"""
         try:
-            doc = Document.get(Document.id == self._read_cnt)
+            page = Crawled.get(Crawled.id == self._read_cnt)
             self._read_cnt += 1
-            return doc
-        except Document.DoesNotExist:
+            return page
+        except Crawled.DoesNotExist:
             return -1
 
     def _get_word(self, word):
@@ -54,7 +55,7 @@ class InvertedIndexer:
         page = self._get_next_page()
         while doc != -1:
             # process over doc
-            page_text = doc.text
+            page_text = doc.content
             page_url = doc.url
 
             with db.atomic():
@@ -71,6 +72,9 @@ class InvertedIndexer:
                     word_tuple = self._get_word(stemmed)
                     if word_tuple == -1:
                         word_tuple = self._add_word(stemmed)
+
+                    word_tuple.num_of_docs += 1
+                    word_tuple.save()
 
                     neighbours = ''
                     for j in range(max(0, i - 5), min(len(tokens), i + 5)):
