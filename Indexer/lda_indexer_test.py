@@ -5,7 +5,7 @@ from gensim.models.ldamulticore import  LdaMulticore
 stemmer = Stemmer()
 tokenizer = Tokenizer()
 detector = StopWordsDetector()
-txt = open('./meta_data/test.txt')
+txt = open('./data/test.txt')
 txt=txt.read()
 sen=sentence_parser(txt)
 a=[]
