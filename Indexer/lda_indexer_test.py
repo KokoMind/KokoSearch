@@ -15,5 +15,7 @@ for i in sen :
 
 id2word = corpora.Dictionary( a )
 corpus = [id2word.doc2bow(text) for text in a]
-lda=LdaMulticore(corpus=corpus, id2word=id2word, num_topics=2,  chunksize=10000, passes=1)
+lda=LdaMulticore(corpus=corpus, id2word=id2word, num_topics=2)
 
+a=lda[id2word.doc2bow(["tv"," show","school","back"])]
+print(a)
