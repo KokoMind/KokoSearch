@@ -1,1 +1,0 @@
-There is a new gensim feature to automatically choose the best model without a manual visualisation in pyLDAvis or word coloring. It is called ‘topic coherence’.  One of the students currently enrolled in our Incubator program, Devashish, has implemented this in Python based on paper by Michael Röder et al.
