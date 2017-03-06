@@ -25,7 +25,7 @@ class InvertedIndexer(Indexer):
     """the inverted indexer class"""
 
     def __init__(self):
-        super.__init__()
+        super().__init__()
 
     def _get_word(self, word):
         """get word from the inverted indexer database"""
