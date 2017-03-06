@@ -27,7 +27,7 @@ class StopWordsDetector:
     """class for detecting the important words"""
 
     def __init__(self):
-        with open('./meta_data/stop_words.txt') as f:
+        with open('./data/stop_words.txt') as f:
             content = f.readlines()
 
         self._stop_words = [x.strip() for x in content]
