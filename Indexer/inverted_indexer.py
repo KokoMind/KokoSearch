@@ -1,19 +1,12 @@
 from Indexer.db_model import *
 from Indexer.utils import *
 import Crawler.db_model as c_db
-class Index :
+class Indexer :
     def __init__(self):
         create_data_base()
         self._stemmer = Stemmer()
         self._tokenizer = Tokenizer()
         self._detector = StopWordsDetector()
-
-
-class InvertedIndexer:
-    """the inverted indexer class"""
-
-    def __init__(self):
-        self._read_cnt = 1
 
     def _get_next_page(self):
         """get next page from the crawler database"""
@@ -23,6 +16,13 @@ class InvertedIndexer:
             return page
         except c_db.Crawled.DoesNotExist:
             return -1
+
+class InvertedIndexer(Indexer):
+    """the inverted indexer class"""
+
+    def __init__(self):
+        self._read_cnt = 1
+
 
     def _get_word(self, word):
         """get word from the inverted indexer database"""
