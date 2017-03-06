@@ -4,6 +4,7 @@ import Crawler.db_model as c_db
 class Indexer :
     def __init__(self):
         create_data_base()
+        self._read_cnt = 1
         self._stemmer = Stemmer()
         self._tokenizer = Tokenizer()
         self._detector = StopWordsDetector()
@@ -19,10 +20,6 @@ class Indexer :
 
 class InvertedIndexer(Indexer):
     """the inverted indexer class"""
-
-    def __init__(self):
-        self._read_cnt = 1
-
 
     def _get_word(self, word):
         """get word from the inverted indexer database"""
