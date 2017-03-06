@@ -27,4 +27,4 @@ class Lda_Indexer(Indexer):
 
         return new_list
 
-    
+
