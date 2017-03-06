@@ -9,9 +9,9 @@ class InvertedIndexer:
     def __init__(self):
         create_data_base()
         self._read_cnt = 1
-        self.stemmer = Stemmer()
-        self.tokenizer = Tokenizer()
-        self.detector = StopWordsDetector()
+        self._stemmer = Stemmer()
+        self._tokenizer = Tokenizer()
+        self._detector = StopWordsDetector()
 
     def _get_next_page(self):
         """get next page from the crawler database"""
@@ -63,12 +63,12 @@ class InvertedIndexer:
                 if doc_tuple == -1:
                     doc_tuple = self._add_document(page_url)
 
-            tokens = self.tokenizer.tokenize(page_text)
+            tokens = self._tokenizer.tokenize(page_text)
             for i, token in enumerate(tokens):
-                if len(token) < 3 or self.detector.is_stop_word(token):
+                if len(token) < 3 or self._detector.is_stop_word(token):
                     continue
                 else:
-                    stemmed = self.stemmer.stem(token)
+                    stemmed = self._stemmer.stem(token)
                     word_tuple = self._get_word(stemmed)
                     if word_tuple == -1:
                         word_tuple = self._add_word(stemmed)

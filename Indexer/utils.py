@@ -2,11 +2,11 @@ import string
 
 
 class Stemmer:
-    prefixes = ['ing', 'es', 's', 'ed', 'er']
+    _prefixes = ['ing', 'es', 's', 'ed', 'er']
 
     def stem(self, word):
         if len(word) > 3:
-            for prefix in self.prefixes:
+            for prefix in self._prefixes:
                 if word.find(prefix, len(word) - len(prefix) - 1) != -1:
                     word = word[:len(word) - len(prefix)]
                     if word[-1] == word[-2]:
@@ -15,10 +15,10 @@ class Stemmer:
 
 
 class Tokenizer:
-    translate_table = dict((ord(char), ord(' ')) for char in string.punctuation)
+    _translate_table = dict((ord(char), ord(' ')) for char in string.punctuation)
 
     def tokenize(self, s):
-        s = s.translate(self.translate_table)
+        s = s.translate(self._translate_table)
         return s.split()
 
 
@@ -29,7 +29,7 @@ class StopWordsDetector:
         with open('stop_words.txt') as f:
             content = f.readlines()
 
-        self.stop_words = [x.strip() for x in content]
+        self._stop_words = [x.strip() for x in content]
 
     def is_stop_word(self, word):
-        return word in self.stop_words
+        return word in self._stop_words
