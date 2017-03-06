@@ -18,13 +18,14 @@ class Lda_Indexer(Indexer):
         self._corpus = gensim.corpora.MmCorpus(self.corpus_file)
 
     def _train_model(self,num_topics):
-        self._lda = LdaMulticore(corpus=self._corpus, id2word=self.id2word, num_topics=num_topics, update_every=1, chunksize=10000, passes=1)
+        self._lda = LdaMulticore(corpus=self._corpus, id2word=self.id2word, num_topics=num_topics, chunksize=10000, passes=1)
         self._save_model()
 
     def _save_model(self):
         self._lda.save('lda.model')
 
     def _eval_doc(self,doc):
+        doc=doc.split()
         new_doc=self._id2word.doc2bow(doc)
         sorted_probs=self._lda[new_doc].sort(key=operator.itemgetter(1))
         top_topics, b = [list(c) for c in zip(*sorted_probs[:5])]
