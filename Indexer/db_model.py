@@ -1,7 +1,7 @@
 from peewee import *
 from playhouse.sqlite_ext import SqliteExtDatabase
 
-db = SqliteExtDatabase('my_database.db')
+db = SqliteExtDatabase('Indexer_cache.db')
 
 
 class BaseModel(Model):
@@ -10,7 +10,7 @@ class BaseModel(Model):
 
 
 class Word(BaseModel):
-    word = CharField()
+    word = CharField(unique=True)
     num_of_docs = IntegerField()
 
 
@@ -19,7 +19,7 @@ class Topic(BaseModel):
 
 
 class Document(BaseModel):
-    url = CharField()
+    url = CharField(unique=True)
     c1 = ForeignKeyField(Topic, related_name='c1')
     c2 = ForeignKeyField(Topic, related_name='c2')
     c3 = ForeignKeyField(Topic, related_name='c3')

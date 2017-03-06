@@ -89,4 +89,5 @@ ENV/
 .ropeproject
 
 .idea/*
-my_database.db
+Indexer/Indexer_cache.db
+Crawler/Crawler_cache.db
