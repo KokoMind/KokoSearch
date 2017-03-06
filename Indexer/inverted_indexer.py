@@ -17,7 +17,13 @@ class Indexer :
             return page
         except c_db.Crawled.DoesNotExist:
             return -1
-
+    def _get_Document(self, url):
+        """get word from the inverted indexer database"""
+        try:
+            doc = Document.get(Document.url == url)
+            return doc
+        except Document.DoesNotExist:
+            return -1
 class InvertedIndexer(Indexer):
     """the inverted indexer class"""
 

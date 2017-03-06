@@ -1,4 +1,5 @@
 import string
+import nltk
 
 
 class Stemmer:
@@ -33,3 +34,14 @@ class StopWordsDetector:
 
     def is_stop_word(self, word):
         return word in self._stop_words
+
+    def remove_stop_words(self,lis):
+        new_lis=[]
+        for i in lis:
+            if not self.is_stop_word(i):
+                new_lis.append(i)
+        return new_lis
+
+def sentence_parser(page):
+    sents = nltk.sent_tokenize(page)
+    return sents
