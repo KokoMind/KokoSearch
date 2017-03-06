@@ -5,21 +5,22 @@ import operator
 from Indexer.db_model import *
 from Indexer.utils import *
 class Lda_Indexer(Indexer):
-    def __init__(self):
+    def __init__(self,_id2word_file,corpus_file):
         super.__init__()
+        self._id2word_file=_id2word_file
+        self._id2word_file=corpus_file
 
 
-    def _construct_corpus(self,_id2word_file,corpus_file):
-        self._id2word = gensim.corpora.Dictionary.load_from_text(_id2word_file)
-        self._corpus = gensim.corpora.MmCorpus(corpus_file)
+    def _construct_corpus(self):
+        self._id2word = gensim.corpora.Dictionary.load_from_text(self._id2word_file)
+        self._corpus = gensim.corpora.MmCorpus(self.corpus_file)
 
     def _train_model(self,num_topics):
+        self._construct_corpus()
         self._lda = LdaMulticore(corpus=self._corpus, id2word=self.id2word, num_topics=num_topics, update_every=1, chunksize=10000, passes=1)
-
+        self._save_model()
     def _save_model(self):
         self._lda.save('lda.model')
-
-
     def _eval_doc(self,doc):
         new_doc=self._id2word.doc2bow(doc)
         sorted_probs=self._lda[new_doc].sort(key=operator.itemgetter(1))
@@ -27,6 +28,7 @@ class Lda_Indexer(Indexer):
         new_list = [x + 1 for x in top_topics]
 
         return new_list
+
 
     def _add_document(self, url,c1,c2,c3,c4,c5):
         return Document.create(url=url, c1=c1, c2=c2, c3=c3, c4=c4, c5=c5)
