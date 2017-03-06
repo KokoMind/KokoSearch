@@ -5,20 +5,26 @@ import operator
 from Indexer.db_model import *
 from Indexer.utils import *
 class Lda_Indexer(Indexer):
-    def __init__(self,_id2word_file,corpus_file,load=None):
+    def __init__(self,_id2word_file,corpus_file,num_topics=500,load=None):
         super.__init__()
+        self.num_topics=num_topics
         self._id2word_file=_id2word_file
         self._id2word_file=corpus_file
         self._construct_corpus()
         if load != None:
             gensim.models.ldamodel.LdaModel.load(load)
+    def fill_topics(self):
+        #to be continued (add num of docs)
+        for i in range(self.num_topics):
+            Topic.create()
+
 
     def _construct_corpus(self):
         self._id2word = gensim.corpora.Dictionary.load_from_text(self._id2word_file)
         self._corpus = gensim.corpora.MmCorpus(self.corpus_file)
 
-    def _train_model(self,num_topics):
-        self._lda = LdaMulticore(corpus=self._corpus, id2word=self.id2word, num_topics=num_topics, chunksize=10000, passes=1)
+    def _train_model(self):
+        self._lda = LdaMulticore(corpus=self._corpus, id2word=self.id2word, num_topics=self.num_topics, chunksize=10000, passes=1)
         self._save_model()
 
     def _save_model(self):
@@ -28,7 +34,7 @@ class Lda_Indexer(Indexer):
         doc=doc.split()
         new_doc=self._id2word.doc2bow(doc)
         sorted_probs=self._lda[new_doc].sort(key=operator.itemgetter(1))
-        top_topics, b = [list(c) for c in zip(*sorted_probs[:5])]
+        top_topics, _ = [list(c) for c in zip(*sorted_probs[:5])]
         new_list = [x + 1 for x in top_topics]
         return new_list
 
