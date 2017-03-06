@@ -27,6 +27,9 @@ class Indexer :
 class InvertedIndexer(Indexer):
     """the inverted indexer class"""
 
+    def __init__(self):
+        super().__init__()
+
     def _get_word(self, word):
         """get word from the inverted indexer database"""
         try:
@@ -35,13 +38,6 @@ class InvertedIndexer(Indexer):
         except Word.DoesNotExist:
             return -1
 
-    def _get_Document(self, url):
-        """get word from the inverted indexer database"""
-        try:
-            doc = Document.get(Document.url == url)
-            return doc
-        except Document.DoesNotExist:
-            return -1
 
     def _add_word(self, word):
         """add word to the inverted indexer database"""
