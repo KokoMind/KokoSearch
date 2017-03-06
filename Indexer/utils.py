@@ -36,11 +36,12 @@ class StopWordsDetector:
         return word in self._stop_words
 
     def remove_stop_words(self,lis):
-        new_lis=[]
+        lis=lis.split()
+        s=""
         for i in lis:
             if not self.is_stop_word(i):
-                new_lis.append(i)
-        return new_lis
+                s+=i+" "
+        return s
 
 def sentence_parser(page):
     sents = nltk.sent_tokenize(page)
