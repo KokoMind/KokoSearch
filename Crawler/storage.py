@@ -3,7 +3,7 @@
 from Crawler.db_model import *
 from datetime import datetime
 import hashlib
-    
+
 class Storage:
     """This class handles database transactions and contain the temporary lists"""
 
