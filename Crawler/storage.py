@@ -2,6 +2,7 @@
 
 from db_model import *
 from datetime import datetime
+import hashlib
 
 
 class Storage:
@@ -26,11 +27,11 @@ class Storage:
 
     @staticmethod
     @DB_CRAWLER.transaction()
-    def cache_hash(hashe):
+    def cache_hash(url):
         """save the hash of a url return 0 if successfull -1 if database error 0 if already found"""
         try:
             with DB_CRAWLER.atomic():
-                Hasher.create(hash=hashe)
+                Hasher.create(hash=hashlib.sha1(url.encode('ascii', 'ignore')).hexdigest())
             return 0
         except IntegrityError:
             return 1
@@ -41,7 +42,7 @@ class Storage:
     @DB_CRAWLER.transaction()
     def cache_to_crawl(to_crawl_list):
         """to_crawl_list must be [(value, url, dns),...] cache to crawl lists return 0 if successfull -1 if database error"""
-        data_source = [{'url': url, 'dns': dns, 'value': value} for url, dns, value in to_crawl_list]
+        data_source = [{'url': url, 'dns': dns, 'value': value} for value, url, dns in to_crawl_list]
         try:
             with DB_CRAWLER.atomic():
                 for idx in range(0, len(data_source), 100):
