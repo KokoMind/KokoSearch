@@ -5,7 +5,7 @@ import requests
 
 
 class Fetcher:
-    """Class which will fetch the page validate it that HTML and extract content and hyperlinks"""
+    """Class that will fetch the page, validate that it is of type HTML, extract its contents and hyperlinks"""
 
     @staticmethod
     def fetch(url):
@@ -18,7 +18,8 @@ class Fetcher:
         return code, links, content
 
     @staticmethod
-    def _download_page(url):  # returns data,code. For code, 0 means success and -1 means failure.
+    def _download_page(url):
+        """returns data,code. For code, 0 means success and -1 means failure."""
         if Fetcher._check_url(url):
             with urllib.request.urlopen(url) as response:
                 data = response.read().decode('utf-8', 'ignore')
@@ -27,8 +28,8 @@ class Fetcher:
             return -1, None
 
     @staticmethod
-    def _extract_content(soup, page):  # Extract page contents
-
+    def _extract_content(soup, page):
+        """Extract page contents (text for indexing)"""
         # kill all script and style elements
         for script in soup(["script", "style"]):
             script.decompose()  # rip it out
@@ -45,14 +46,16 @@ class Fetcher:
 
     @staticmethod
     def _check_url(url):
-        # Checks that URL is alive and running.
+        """Checks that URL is alive and of type html."""
         connection_lost = True
         while connection_lost:
             try:
-                request = requests.get(url)
-                connection_lost = False
-                if request.status_code == 200:  # OK
-                    return True
+                response = requests.get(url)
+                if response.status_code == 200:  # OK
+                    content_type = response.headers['content-type']
+                    if content_type.find('html') != -1:
+                        return True
+                    return False
                 else:
                     return False
             except:
@@ -61,6 +64,9 @@ class Fetcher:
     @staticmethod
     def _extract_links(soup, page):
         links = re.findall('"((http)s?://.*?)"', page)
-        return [url for url, _ in links]
-code,links,content = Fetcher.fetch("https://en.wikipedia.org/wiki/PageRank")
-print(links)
+        links = [url for url, _ in links]
+        return links
+
+# Test Driver code :D
+# code,links,content = Fetcher.fetch("http://www.adobe.com/")
+# print(code, links)
