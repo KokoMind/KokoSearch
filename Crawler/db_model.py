@@ -1,12 +1,12 @@
 from peewee import *
 from playhouse.sqlite_ext import SqliteExtDatabase
 
-db = SqliteExtDatabase('Crawler_cache.db')
+DB_CRAWLER = SqliteExtDatabase('Crawler_cache.db')
 
 
 class BaseModel(Model):
     class Meta:
-        database = db
+        database = DB_CRAWLER
 
 
 class Crawled(BaseModel):
@@ -27,5 +27,5 @@ class Hasher(BaseModel):
 
 
 def create_data_base():
-    db.connect()
-    db.create_tables([Crawled, ToCrawl, Hasher], safe=True)
+    DB_CRAWLER.connect()
+    DB_CRAWLER.create_tables([Crawled, ToCrawl, Hasher], safe=True)
