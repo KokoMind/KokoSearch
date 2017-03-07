@@ -23,7 +23,7 @@ class ToCrawl(BaseModel):
 
 
 class Hasher(BaseModel):
-    hash = CharField(max_length=21, unique=True, index=True, null=False)
+    hash = CharField(max_length=42, unique=True, index=True, null=False)
 
 
 def create_database():
