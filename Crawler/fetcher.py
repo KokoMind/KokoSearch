@@ -65,6 +65,7 @@ class Fetcher:
     def _extract_links(soup, page):
         links = re.findall('"((http)s?://.*?)"', page)
         links = [url for url, _ in links]
+
         return links
 
 # Test Driver code :D
