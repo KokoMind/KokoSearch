@@ -1,25 +1,31 @@
 from peewee import *
 from playhouse.sqlite_ext import SqliteExtDatabase
 
-db = SqliteExtDatabase('Crawler_cache.db')
+DB_CRAWLER = SqliteExtDatabase('Crawler_cache.db')
 
 
 class BaseModel(Model):
     class Meta:
-        database = db
+        database = DB_CRAWLER
 
 
 class Crawled(BaseModel):
     url = CharField(unique=True)
     content = TextField()
-    refresh = IntegerField()
     indexed = BooleanField()
+    visited = DateTimeField()
 
 
 class ToCrawl(BaseModel):
-    url = CharField()
+    url = TextField()
+    dns = CharField()
+    value = DoubleField()
 
 
-def create_data_base():
-    db.connect()
-    db.create_tables([Crawled, ToCrawl], safe=True)
+class Hasher(BaseModel):
+    hash = CharField(max_length=21, unique=True, index=True, null=False)
+
+
+def create_database():
+    DB_CRAWLER.connect()
+    DB_CRAWLER.create_tables([Crawled, ToCrawl, Hasher], safe=True)
