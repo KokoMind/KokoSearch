@@ -26,6 +26,6 @@ class Hasher(BaseModel):
     hash = CharField(max_length=21, unique=True, index=True, null=False)
 
 
-def create_data_base():
+def create_database():
     DB_CRAWLER.connect()
     DB_CRAWLER.create_tables([Crawled, ToCrawl, Hasher], safe=True)

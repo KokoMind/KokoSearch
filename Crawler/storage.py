@@ -1,6 +1,6 @@
 """File to handle all database transactions"""
 
-from .db_model import *
+from db_model import *
 from datetime import datetime
 
 
@@ -55,7 +55,6 @@ class Storage:
     def get_to_crawl(no=None):
         """retrieve links to continue crawling no? for specific number of links return [(value,url,dns),...]"""
         try:
-            links = None
             if not no:
                 links = [(link.value, link.url, link.dns) for link in ToCrawl.select()]
             else:

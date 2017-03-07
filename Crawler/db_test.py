@@ -1,6 +1,6 @@
 """File to test database transactions"""
 
-from .storage import *
+from storage import *
 import logging
 
 logger = logging.getLogger('peewee')
