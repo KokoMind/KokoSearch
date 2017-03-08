@@ -1,4 +1,5 @@
 import threading
+from aptdaemon import lock
 
 
 class CrawlerThread(threading.Thread):
@@ -12,4 +13,9 @@ class CrawlerThread(threading.Thread):
 
     def run(self):
         """The starting point of a thread"""
+        lock.acquire()
+        #Here call the insertion to frontier queue.
+        lock.release()
+
+    def log(self):
         pass

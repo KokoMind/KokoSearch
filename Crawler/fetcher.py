@@ -2,6 +2,9 @@ import urllib.request
 from bs4 import BeautifulSoup
 import re
 import requests
+from url_normalize import url_normalize
+import urllib.parse
+from os.path import splitext
 
 
 class Fetcher:
@@ -46,9 +49,8 @@ class Fetcher:
 
     @staticmethod
     def _check_url(url):
-        """Checks that URL is alive and of type html."""
-        connection_lost = True
-        while connection_lost:
+        """Checks that URL is alive and of has a response of type html."""
+        while True:
             try:
                 response = requests.get(url)
                 if response.status_code == 200:  # OK
@@ -59,15 +61,46 @@ class Fetcher:
                 else:
                     return False
             except:
-                print("\rConnection lost. Retry!", end="")
+                if Fetcher._internet_on():
+                    return False
+                print("\rConnection lost. Retry!!", end="")
 
     @staticmethod
     def _extract_links(soup, page):
-        links = re.findall('"((http)s?://.*?)"', page)
-        links = [url for url, _ in links]
+        """Extract links from a webpage and normalize those links."""
+        extracted_links = re.findall('"((http)s?://.*?)"', page)
+        extracted_links = [url for url, _ in extracted_links]
 
+        links = []
+        for i in range(len(extracted_links)):
+            # Normalize the url link by converting it to canonical form.
+            # For more info, refer to https://pypi.python.org/pypi/urlnorm
+            extracted_links[i] = url_normalize(extracted_links[i])
+            extracted_links[i] = extracted_links[i].replace("%3A", ":")  # Restore the ":" character back.
+            if Fetcher._check_ext_html(extracted_links[i]):
+                links.append(extracted_links[i])
         return links
 
+    @staticmethod
+    def _internet_on():
+        for timeout in [1, 5]:
+            try:
+                response = urllib.request.urlopen('http://www.google.com', timeout=timeout)
+                return True
+            except urllib.request.URLError as err:
+                pass
+        return False
+
+    @staticmethod
+    def _check_ext_html(url):
+        """check the filename extension either HTML or ''."""
+        parsed = urllib.parse.urlparse(url)
+        root, ext = splitext(parsed.path)
+        target = {'.htm', '.html', '.php', '.aspx', ''}
+        if ext in target:
+            return True
+        return False
+
 # Test Driver code :D
-# code,links,content = Fetcher.fetch("http://www.adobe.com/")
+# code,links,content = Fetcher.fetch('https://wikimediafoundation.org/')
 # print(code, links)
