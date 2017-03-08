@@ -1,12 +1,18 @@
-class prioritisedQueue:
+from queue import Queue
+
+
+class PrioritisedQueue:
     def __init__(self):
-        self.queue = []
+        self.queue = Queue()
 
-    def push(self, element):
-        self.queue.append(element)
+    def push(self, val, url, dns):
+        self.queue.put((val, url, dns))
 
-    def pop(self, element):
-        if len(self.queue) > 0:
-             self.queue.pop(0)
-             return True
-        return False
+    def pop(self):
+        if not self.queue.empty():
+            return self.queue.get()
+        else:
+            return None
+
+    def queue_to_list(self):
+        return list(self.queue.queue)

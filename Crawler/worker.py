@@ -16,3 +16,6 @@ class CrawlerThread(threading.Thread):
         lock.acquire()
         #Here call the insertion to frontier queue.
         lock.release()
+
+    def log(self):
+        pass
