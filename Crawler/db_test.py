@@ -1,11 +1,12 @@
 """File to test database transactions"""
 
-from storage import *
+from Crawler.storage import *
 import logging
 
-logger = logging.getLogger('peewee')
-logger.setLevel(logging.DEBUG)
-logger.addHandler(logging.StreamHandler())
+
+# logger = logging.getLogger('peewee')
+# logger.setLevel(logging.DEBUG)
+# logger.addHandler(logging.StreamHandler())
 
 db = Storage()
 
@@ -27,3 +28,4 @@ assert ret4 == 0
 
 assert Storage.cache_crawled_url('www.google.com', '5lty') == -1
 assert Storage.cache_hash('www.google.com') == 1
+
