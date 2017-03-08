@@ -9,8 +9,14 @@ class Frontier:
         self.queues = [prioritised_queue] * num_threads
         self.attended_websites = [list] * num_threads
 
-    def push_to_serve(self):
+    def push_to_serve(self,element):
+        self.to_serve.append(element)
+
+    def pop_to_worker(self,thread_id):
         pass
 
-    def pop_to_queue(self,thread_id):
+    def save_to_crawl(self):
+        pass
+
+    def load_to_crawl(self):
         pass

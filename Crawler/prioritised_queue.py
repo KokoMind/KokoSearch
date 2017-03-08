@@ -1,9 +1,12 @@
 class prioritisedQueue:
     def __init__(self):
-        self.Queue = []
+        self.queue = []
 
     def push(self, element):
-        pass
+        self.queue.append(element)
 
     def pop(self, element):
-        pass
+        if len(self.queue) > 0:
+             self.queue.pop(0)
+             return True
+        return False
