@@ -23,4 +23,4 @@ class CrawlerThread(threading.Thread):
             lock.acquire()
             frontier.push_to_serve(links)
             lock.release()
-
+            (thread_id, name, parent_id, parent_name, url,content, verbose = 1)

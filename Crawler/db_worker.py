@@ -19,7 +19,7 @@ class DBWorker(threading.Thread):
 class DBCacheCrawled(DBWorker):
     def run(self):
         if self.verbose:
-            if Storage.cache_crawled_url(*self.args) == 0:  # Successfull
+            if Storage.cache_crawled_url(*self.args) == 0:  # Successful
                 print("Crawled link is saved successfully from parent " + self.parent_name)
             else:
                 print("Error for saving crawled link")
