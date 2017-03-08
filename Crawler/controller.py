@@ -5,13 +5,16 @@ from Crawler.worker import CrawlerThread
 class Controller:
     """The Controller of the hole Crawling process"""
 
-    def __init__(self, num_threads):
+    def __init__(self, num_threads, seeds):
         self.num_workers = num_threads
         self.workers = []
         self.frontier = Frontier(num_threads)
         # Create the workers
         for i in range(num_threads):
             self.workers.append(CrawlerThread(i, 'CrawlerThread' + str(i), self.frontier))
+        # insert seeds in to serve
+        self.frontier.push_to_serve(seeds)
+        self.frontier.distribute()
 
     def run(self):
         """The main Program"""

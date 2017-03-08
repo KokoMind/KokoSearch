@@ -5,10 +5,11 @@ from Crawler.controller import Controller
 
 class Config:
     num_threads = 5
+    seeds = [('https://www.wikipedia.org/', '91.198.174.192'), ]
 
 
 def crawl():
-    crawler = Controller(Config.num_threads)
+    crawler = Controller(Config.num_threads, Config.seeds)
     crawler.run()
 
 

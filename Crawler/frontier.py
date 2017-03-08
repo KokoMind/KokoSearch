@@ -8,15 +8,15 @@ class Frontier:
     def __init__(self, num_threads):
         self.num_threads = num_threads
         self.to_serve = []
-        self.queues = [PrioritisedQueue] * num_threads
+        self.queues = [PrioritisedQueue()] * num_threads
         self.attended_websites = [{}] * num_threads
         self.turn = 0
 
     def push_to_serve(self, element):
         self.to_serve.extend(element)
 
-    def distribute(self, thread_id):
-        while self.to_serve:
+    def distribute(self):
+        while len(self.to_serve):
             url, dns = self.to_serve.pop(0)
             if not dns or Storage.cache_hash(url) == 1:
                 continue
@@ -40,7 +40,9 @@ class Frontier:
         arg = []
         for i in range(self.num_threads):
             arg.append(self.queues[i].queue_to_list())
-        ret = Storage.cache_to_crawl()
+        if len(arg) == 0:
+            return
+        ret = Storage.cache_to_crawl(arg)
         if ret == 0:  # successful
             print("To_Crawl links are successfully cached")
         else:

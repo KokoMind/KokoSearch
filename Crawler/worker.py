@@ -18,13 +18,13 @@ class CrawlerThread(threading.Thread):
     def run(self):
         """The starting point of a thread"""
         while True:
-            current_URL = frontier.get_url()
+            current_URL = self.frontier.get_url(self.thread_id)
             if not current_URL:
                 continue
             code, links, content = Fetcher.fetch(current_URL)
             if code == -1:
                 continue
-            lock.acquire()
-            frontier.push_to_serve(links)
-            lock.release()
+            #lock.acquire()
+            self.frontier.push_to_serve(links)
+            #lock.release()
             DBCacheCrawled(0, 'cache_crawled', self.thread_id, self.name, 0, current_URL, content).start()
