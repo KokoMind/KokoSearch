@@ -12,7 +12,7 @@ class Frontier:
         self.attended_websites = [list] * num_threads
 
     def push_to_serve(self, element):
-        self.to_serve.append(element)
+        self.to_serve.extend(element)
 
     def distribute(self, thread_id):
         pass
