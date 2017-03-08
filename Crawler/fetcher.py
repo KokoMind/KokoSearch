@@ -5,7 +5,7 @@ import requests
 from url_normalize import url_normalize
 import urllib.parse
 from os.path import splitext
-
+import socket
 
 class Fetcher:
     """Class that will fetch the page, validate that it is of type HTML, extract its contents and hyperlinks"""
@@ -67,7 +67,7 @@ class Fetcher:
 
     @staticmethod
     def _extract_links(soup, page):
-        """Extract links from a webpage and normalize those links."""
+        """Extract links from a webpage and normalize those links. Returns a list of (link,dns) tuple."""
         extracted_links = re.findall('"((http)s?://.*?)"', page)
         extracted_links = [url for url, _ in extracted_links]
 
@@ -78,7 +78,7 @@ class Fetcher:
             extracted_links[i] = url_normalize(extracted_links[i])
             extracted_links[i] = extracted_links[i].replace("%3A", ":")  # Restore the ":" character back.
             if Fetcher._check_ext_html(extracted_links[i]):
-                links.append(extracted_links[i])
+                links.append((extracted_links[i],Fetcher._extract_dns(extracted_links[i])))
         return links
 
     @staticmethod
@@ -100,6 +100,14 @@ class Fetcher:
         if ext in target:
             return True
         return False
+
+    @staticmethod
+    def _extract_dns(url):
+        try:
+            parsed = urllib.parse.urlparse(url)
+            return socket.gethostbyname(parsed.hostname)
+        except:
+            return None
 
 # Test Driver code :D
 # code,links,content = Fetcher.fetch('https://wikimediafoundation.org/')
