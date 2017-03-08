@@ -2,6 +2,7 @@ import threading
 from aptdaemon import lock
 from Crawler import frontier
 from Crawler.fetcher import Fetcher
+from Crawler.db_worker import DBCacheCrawled
 
 class CrawlerThread(threading.Thread):
     """Class of a thread to crawl the web"""
@@ -23,4 +24,5 @@ class CrawlerThread(threading.Thread):
             lock.acquire()
             frontier.push_to_serve(links)
             lock.release()
-            (thread_id, name, parent_id, parent_name, url,content, verbose = 1)
+            DBCacheCrawled(0, 'cache_crawled', self.thread_id, self.name, 0, current_URL, content).start()
+
