@@ -1,6 +1,7 @@
 """File to test database transactions"""
 
 from Crawler.storage import *
+from Crawler.db_worker import *
 import logging
 
 
@@ -28,4 +29,6 @@ assert ret4 == 0
 
 assert Storage.cache_crawled_url('www.google.com', '5lty') == -1
 assert Storage.cache_hash('www.google.com') == 1
+
+
 

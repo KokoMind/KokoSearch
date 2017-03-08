@@ -23,4 +23,6 @@ class DBCacheCrawled(DBWorker):
                 print("Crawled link is saved successfully from parent " + self.parent_name)
             else:
                 print("Error for saving crawled link")
+        else:
+            Storage.cache_crawled_url(*self.args)
         pass
