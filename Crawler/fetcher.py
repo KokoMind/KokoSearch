@@ -76,16 +76,16 @@ class Fetcher:
             # Normalize the url link by converting it to canonical form.
             # For more info, refer to https://pypi.python.org/pypi/urlnorm
             extracted_links[i] = url_normalize(extracted_links[i])
-            extracted_links[i] = extracted_links[i].replace("%3A",":")      # Restore the ":" character back.
+            extracted_links[i] = extracted_links[i].replace("%3A", ":")  # Restore the ":" character back.
             if Fetcher._check_ext_html(extracted_links[i]):
                 links.append(extracted_links[i])
         return links
 
     @staticmethod
     def _internet_on():
-        for timeout in [1,5]:
+        for timeout in [1, 5]:
             try:
-                response = urllib.request.urlopen('http://www.google.com',timeout=timeout)
+                response = urllib.request.urlopen('http://www.google.com', timeout=timeout)
                 return True
             except urllib.request.URLError as err:
                 pass
@@ -96,11 +96,11 @@ class Fetcher:
         """check the filename extension either HTML or ''."""
         parsed = urllib.parse.urlparse(url)
         root, ext = splitext(parsed.path)
-        target = {'.htm' ,'.html' ,'.php','.aspx', ''}
+        target = {'.htm', '.html', '.php', '.aspx', ''}
         if ext in target:
             return True
         return False
 
 # Test Driver code :D
-#code,links,content = Fetcher.fetch('https://wikimediafoundation.org/')
-#print(code, links)
+# code,links,content = Fetcher.fetch('https://wikimediafoundation.org/')
+# print(code, links)
