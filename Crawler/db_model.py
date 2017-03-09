@@ -31,4 +31,4 @@ def create_database():
     DB_CRAWLER.create_tables([Crawled, ToCrawl, Hasher], safe=True)
 
 
-#create_database()
+create_database()
