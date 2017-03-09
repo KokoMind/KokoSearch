@@ -22,7 +22,7 @@ class CrawlerThread(threading.Thread):
             # print("get next URL")
             current_URL = self.frontier.get_url(self.thread_id)
             if not current_URL:
-                # print("Error 1 from thread " + str(self.thread_id))
+                print("Empty Queue from thread " + str(self.thread_id))
                 continue
             print("URL got from thread " + str(self.thread_id))
             code, links, content = Fetcher.fetch(current_URL)
