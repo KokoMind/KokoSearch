@@ -6,7 +6,7 @@ from Crawler.fetcher import Fetcher
 
 class Config:
     num_threads = 5
-    seeds = [('https://en.wikipedia.org/', Fetcher.extract_dns('https://en.wikipedia.org/')),
+    seeds = [('https://www.wikipedia.org/', Fetcher.extract_dns('https://www.wikipedia.org/')),
              ('https://www.quora.com/', Fetcher.extract_dns('https://www.quora.com/')),
              ('https://www.reddit.com/', Fetcher.extract_dns('https://www.reddit.com/')),
              ]
@@ -19,5 +19,3 @@ def crawl():
 
 if __name__ == "__main__":
     crawl()
-
-print(Fetcher.fetch('https://www.wikipedia.org/'))

@@ -72,7 +72,7 @@ class Fetcher:
     @staticmethod
     def _extract_links(soup, page):
         """Extract links from a webpage and normalize those links. Returns a list of (link,dns) tuple."""
-        extracted_links = re.findall('"(//.*?)"', page)
+        extracted_links = re.findall('"((http)s?://.*?)"', page)
         extracted_links = [url for url, _ in extracted_links]
 
         links = []
@@ -113,6 +113,6 @@ class Fetcher:
         except:
             return None
 
-            # Test Driver code :D
-            # code,links,content = Fetcher.fetch('https://wikimediafoundation.org/')
-            # print(code, links)
+    # Test Driver code :D
+    # code,links,content = Fetcher.fetch('https://wikimediafoundation.org/')
+    # print(code, links)
