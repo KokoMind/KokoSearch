@@ -19,7 +19,7 @@ class Frontier:
         while len(self.to_serve):
             print("serving one link")
             url, dns, properties = self.to_serve.pop(0)
-            value = self._calc_priority(properties)
+            value = Frontier._calc_priority(properties)
             if not dns or Storage.cache_hash(url) == 1:
                 continue
             for i in range(self.num_threads):
@@ -34,9 +34,9 @@ class Frontier:
     def get_url(self, thread_id):
         ret = self.queues[thread_id].pop()
         if not ret:
-            return None
+            return None, None
         else:
-            return ret[1]
+            return ret[0], ret[1]
 
     def save_to_crawl(self):
         arg = []
@@ -54,7 +54,7 @@ class Frontier:
         pass
 
     @staticmethod
-    def _calc_priority(self, properties):
+    def _calc_priority(properties):
         """Properties (no.out_links, size_parent, size_url, parent_priority) constants of k1,k2,k3,k4 Equation = k1*A/sum + k2*B/sum + k3*C/sum + k4*D/sum"""
         k1, k2, k3, k4 = 0.25, 0.25, 0.4, 0.1
         A, B, C, D = properties[0], properties[1], properties[2], properties[3]
