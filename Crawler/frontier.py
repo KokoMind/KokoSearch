@@ -10,7 +10,6 @@ class Frontier:
         self.to_serve = []
         self.queues = [PrioritisedQueue()] * num_threads
         self.attended_websites = [{}] * num_threads
-        self.turn = 0
 
     def push_to_serve(self, element):
         self.to_serve.extend(element)
@@ -19,18 +18,18 @@ class Frontier:
         # print("distributing")
         while len(self.to_serve):
             print("serving one link")
-            url, dns = self.to_serve.pop(0)
+            url, dns, properties = self.to_serve.pop(0)
+            value = self._calc_priority(properties)
             if not dns or Storage.cache_hash(url) == 1:
                 continue
             for i in range(self.num_threads):
                 if dns in self.attended_websites[i]:
-                    self.queues[i].push(0, url, dns)
+                    self.queues[i].push(value, url, dns)
                     break
             else:
-                self.queues[self.turn].push(0, url, dns)
-                self.attended_websites[self.turn][dns] = 1
-                self.turn += 1
-                self.turn %= self.num_threads
+                turn_ = self._get_turn()
+                self.queues[turn_].push(value, url, dns)
+                self.attended_websites[turn_][dns] = 1
 
     def get_url(self, thread_id):
         ret = self.queues[thread_id].pop()
@@ -53,3 +52,22 @@ class Frontier:
 
     def load_to_crawl(self):
         pass
+
+    @staticmethod
+    def _calc_priority(self, properties):
+        """Properties (no.out_links, size_parent, size_url, parent_priority) constants of k1,k2,k3,k4 Equation = k1*A/sum + k2*B/sum + k3*C/sum + k4*D/sum"""
+        k1, k2, k3, k4 = 0.25, 0.25, 0.4, 0.1
+        A, B, C, D = properties[0], properties[1], properties[2], properties[3]
+        summation = sum(properties)
+        ret = k1 * A / summation + k2 * B / summation + k3 * C / summation + k4 * D / summation
+        return ret
+
+    def _get_turn(self):
+        ret = 0
+        q_sz, dns_sz = [], []
+        score = []
+        for i in range(self.num_threads):
+            q_sz.append(self.queues[i].size)
+            dns_sz.append(len(self.attended_websites[i]))
+            score.append(float(q_sz[i] * dns_sz[i]) / (0.7 * float(q_sz) + 0.3 * float(dns_sz)))
+        return score.index(min(score))
