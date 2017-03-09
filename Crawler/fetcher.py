@@ -7,6 +7,7 @@ import urllib.parse
 from os.path import splitext
 import socket
 
+
 class Fetcher:
     """Class that will fetch the page, validate that it is of type HTML, extract its contents and hyperlinks"""
 
@@ -24,9 +25,12 @@ class Fetcher:
     def _download_page(url):
         """returns data,code. For code, 0 means success and -1 means failure."""
         if Fetcher._check_url(url):
-            with urllib.request.urlopen(url) as response:
-                data = response.read().decode('utf-8', 'ignore')
-                return 0, data
+            try:
+                with urllib.request.urlopen(url) as response:
+                    data = response.read().decode('utf-8', 'ignore')
+                    return 0, data
+            except:
+                return -1, None
         else:
             return -1, None
 
@@ -78,7 +82,7 @@ class Fetcher:
             extracted_links[i] = url_normalize(extracted_links[i])
             extracted_links[i] = extracted_links[i].replace("%3A", ":")  # Restore the ":" character back.
             if Fetcher._check_ext_html(extracted_links[i]):
-                links.append((extracted_links[i],Fetcher._extract_dns(extracted_links[i])))
+                links.append((extracted_links[i], Fetcher._extract_dns(extracted_links[i])))
         return links
 
     @staticmethod
@@ -109,6 +113,6 @@ class Fetcher:
         except:
             return None
 
-# Test Driver code :D
-# code,links,content = Fetcher.fetch('https://wikimediafoundation.org/')
-# print(code, links)
+            # Test Driver code :D
+            # code,links,content = Fetcher.fetch('https://wikimediafoundation.org/')
+            # print(code, links)

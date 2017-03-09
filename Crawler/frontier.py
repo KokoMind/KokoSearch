@@ -16,7 +16,9 @@ class Frontier:
         self.to_serve.extend(element)
 
     def distribute(self):
+        # print("distributing")
         while len(self.to_serve):
+            print("serving one link")
             url, dns = self.to_serve.pop(0)
             if not dns or Storage.cache_hash(url) == 1:
                 continue
@@ -28,6 +30,7 @@ class Frontier:
                 self.queues[self.turn].push(0, url, dns)
                 self.attended_websites[self.turn][dns] = 1
                 self.turn += 1
+                self.turn %= self.num_threads
 
     def get_url(self, thread_id):
         ret = self.queues[thread_id].pop()
@@ -39,7 +42,7 @@ class Frontier:
     def save_to_crawl(self):
         arg = []
         for i in range(self.num_threads):
-            arg.append(self.queues[i].queue_to_list())
+            arg.extend(self.queues[i].queue_to_list())
         if len(arg) == 0:
             return
         ret = Storage.cache_to_crawl(arg)

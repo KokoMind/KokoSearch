@@ -7,6 +7,7 @@ class PrioritisedQueue:
 
     def push(self, val, url, dns):
         self.queue.put((val, url, dns))
+        print("new link pushed")
 
     def pop(self):
         if not self.queue.empty():

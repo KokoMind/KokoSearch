@@ -12,16 +12,21 @@ class Controller:
         # Create the workers
         for i in range(num_threads):
             self.workers.append(CrawlerThread(i, 'CrawlerThread' + str(i), self.frontier))
+        print("Workers created")
         # insert seeds in to serve
         self.frontier.push_to_serve(seeds)
+        print("seeds pushed")
         self.frontier.distribute()
+        print("seeds distributed")
 
     def run(self):
         """The main Program"""
         try:
             for i in range(self.num_workers):
                 self.workers[i].start()
+            print("All Workers started")
             while True:
                 self.frontier.distribute()
         except KeyboardInterrupt:
+            print("saving before exit")
             self.frontier.save_to_crawl()
