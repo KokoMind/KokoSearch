@@ -63,11 +63,10 @@ class Frontier:
         return ret
 
     def _get_turn(self):
-        ret = 0
         q_sz, dns_sz = [], []
         score = []
         for i in range(self.num_threads):
             q_sz.append(self.queues[i].size)
             dns_sz.append(len(self.attended_websites[i]))
-            score.append(float(q_sz[i] * dns_sz[i]) / (0.7 * float(q_sz) + 0.3 * float(dns_sz)))
+            score.append(float(q_sz[i] * dns_sz[i]) / (0.7 * float(q_sz[i]) + 0.3 * float(dns_sz[i]) + 0.000000001))
         return score.index(min(score))
