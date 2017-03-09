@@ -1,12 +1,12 @@
-from queue import Queue
+from queue import PriorityQueue
 
 
 class PrioritisedQueue:
     def __init__(self):
-        self.queue = Queue()
+        self.queue = PriorityQueue()
 
     def push(self, val, url, dns):
-        self.queue.put((val, url, dns))
+        self.queue.put((1 - val, url, dns))  # Minimum Priority Queue
         print("new link pushed")
 
     def pop(self):
@@ -17,3 +17,7 @@ class PrioritisedQueue:
 
     def queue_to_list(self):
         return list(self.queue.queue)
+
+    @property
+    def size(self):
+        return self.queue.qsize()

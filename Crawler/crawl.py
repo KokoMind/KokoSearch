@@ -6,9 +6,9 @@ from Crawler.fetcher import Fetcher
 
 class Config:
     num_threads = 5
-    seeds = [('https://www.wikipedia.org/', Fetcher.extract_dns('https://www.wikipedia.org/')),
-             ('https://www.quora.com/', Fetcher.extract_dns('https://www.quora.com/')),
-             ('https://www.reddit.com/', Fetcher.extract_dns('https://www.reddit.com/')),
+    seeds = [('https://en.wikipedia.org/', Fetcher.extract_dns('https://en.wikipedia.org/'), (0, 0, 0, 1)),
+             ('https://www.quora.com/', Fetcher.extract_dns('https://www.quora.com/'), (0, 0, 0, 1)),
+             ('https://www.reddit.com/', Fetcher.extract_dns('https://www.reddit.com/'), (0, 0, 0, 1)),
              ]
 
 

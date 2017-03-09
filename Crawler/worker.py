@@ -20,18 +20,24 @@ class CrawlerThread(threading.Thread):
         print("Thread " + str(self.thread_id) + " started")
         while True:
             # print("get next URL")
-            current_URL = self.frontier.get_url(self.thread_id)
+            value, current_URL = self.frontier.get_url(self.thread_id)
             if not current_URL:
-                # print("Error 1 from thread " + str(self.thread_id))
+                # print("Empty Queue from thread " + str(self.thread_id))
                 continue
             print("URL got from thread " + str(self.thread_id))
             code, links, content = Fetcher.fetch(current_URL)
             if code == -1:
-                print("Error 2 from thread " + str(self.thread_id))
+                print("Unable to fetch from thread " + str(self.thread_id))
                 continue
+            out_links = len(links)
+            sz_parent = len(content)
+            links_mod = []
+            for i in range(len(links)):
+                links_mod.append((links[i][0], links[i][1], (out_links, sz_parent, len(links[i][0]), value)))
+
             print("URL fetched from thread " + str(self.thread_id))
             # lock.acquire()
-            self.frontier.push_to_serve(links)
+            self.frontier.push_to_serve(links_mod)
             # lock.release()
             DBCacheCrawled(0, 'cache_crawled', self.thread_id, self.name, 0, current_URL, content).start()
             print("URL cached  from thread " + str(self.thread_id))
