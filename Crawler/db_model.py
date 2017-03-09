@@ -29,3 +29,6 @@ class Hasher(BaseModel):
 def create_database():
     DB_CRAWLER.connect()
     DB_CRAWLER.create_tables([Crawled, ToCrawl, Hasher], safe=True)
+
+
+#create_database()

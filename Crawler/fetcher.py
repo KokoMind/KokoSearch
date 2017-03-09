@@ -106,7 +106,7 @@ class Fetcher:
         return False
 
     @staticmethod
-    def _extract_dns(url):
+    def extract_dns(url):
         try:
             parsed = urllib.parse.urlparse(url)
             return socket.gethostbyname(parsed.hostname)
