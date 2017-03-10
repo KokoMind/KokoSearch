@@ -57,6 +57,11 @@ class Frontier:
             print("Error. Links 'To_crawl' are lost!")
 
     def load_to_crawl(self):
+        ret_code, links = Storage.get_to_crawl()
+        if ret_code == 0:  # successfull
+            pass
+        else:
+            print("Cannot Crawl")
         pass
 
     @staticmethod

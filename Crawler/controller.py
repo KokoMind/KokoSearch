@@ -5,7 +5,7 @@ from Crawler.worker import CrawlerThread
 class Controller:
     """The Controller of the hole Crawling process"""
 
-    def __init__(self, num_threads, seeds):
+    def __init__(self, num_threads, seeds, cont_to_crawl):
         self.num_workers = num_threads
         self.workers = []
         self.frontier = Frontier(num_threads)
@@ -14,10 +14,13 @@ class Controller:
             self.workers.append(CrawlerThread(i, 'CrawlerThread' + str(i), self.frontier))
         print("Workers created")
         # insert seeds in to serve
-        self.frontier.push_to_serve(seeds)
-        print("seeds pushed")
-        self.frontier.distribute()
-        print("seeds distributed")
+        if not cont_to_crawl:
+            self.frontier.push_to_serve(seeds)
+            print("seeds pushed")
+            self.frontier.distribute()
+            print("seeds distributed")
+        else:
+            self.frontier.load_to_crawl()
 
     def run(self):
         """The main Program"""
