@@ -7,7 +7,6 @@ import urllib.parse
 from os.path import splitext
 import socket
 
-
 class Fetcher:
     """Class that will fetch the page, validate that it is of type HTML, extract its contents and hyperlinks"""
 
@@ -16,7 +15,8 @@ class Fetcher:
         code, page = Fetcher._download_page(url)
         if code == -1:
             return code, None, None
-        soup = BeautifulSoup(page, 'html.parser')
+
+        soup = BeautifulSoup(page, 'lxml')
         content = Fetcher._extract_content(soup, page)
         links = Fetcher._extract_links(soup, page)
         return code, links, content
@@ -42,13 +42,13 @@ class Fetcher:
             script.decompose()  # rip it out
 
         # get text
-        text = soup.get_text()
+        text = soup.get_text(' ')
         # break into lines and remove leading and trailing space on each
         lines = (line.strip() for line in text.splitlines())
         # break multi-headlines into a line each
-        chunks = (phrase.strip() for line in lines for phrase in line.split("  "))
+        chunks = (phrase.strip() for line in lines for phrase in line.split(" "))
         # drop blank lines
-        text = '\n'.join(chunk for chunk in chunks if chunk)
+        text = ' '.join(chunk for chunk in chunks if chunk)
         return text
 
     @staticmethod
@@ -114,5 +114,5 @@ class Fetcher:
             return None
 
     # Test Driver code :D
-    # code,links,content = Fetcher.fetch('https://wikimediafoundation.org/')
-    # print(code, links)
+code,links,content = Fetcher.fetch('https://wikimediafoundation.org/')
+print(code, content)
