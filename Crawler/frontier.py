@@ -8,8 +8,12 @@ class Frontier:
     def __init__(self, num_threads):
         self.num_threads = num_threads
         self.to_serve = []
-        self.queues = [PrioritisedQueue()] * num_threads
-        self.attended_websites = [{}] * num_threads
+        self.queues, self.attended_websites = [], []
+        for i in range(num_threads):
+            self.queues.append(PrioritisedQueue())
+            self.attended_websites.append({})
+        self.turn = -1
+        self.crawled = 0
 
     def push_to_serve(self, element):
         self.to_serve.extend(element)
@@ -20,10 +24,11 @@ class Frontier:
             print("serving one link")
             url, dns, properties = self.to_serve.pop(0)
             value = Frontier._calc_priority(properties)
-            if not dns or Storage.cache_hash(url) == 1:
+            if (not dns) or (Storage.cache_hash(url) == 1):
                 continue
             for i in range(self.num_threads):
                 if dns in self.attended_websites[i]:
+                    print("found dns ----------------------------")
                     self.queues[i].push(value, url, dns)
                     break
             else:
@@ -34,9 +39,10 @@ class Frontier:
     def get_url(self, thread_id):
         ret = self.queues[thread_id].pop()
         if not ret:
-            return None, None
+            return None, None, None
         else:
-            return ret[0], ret[1]
+            self.crawled += 1
+            return ret
 
     def save_to_crawl(self):
         arg = []
@@ -56,13 +62,17 @@ class Frontier:
     @staticmethod
     def _calc_priority(properties):
         """Properties (no.out_links, size_parent, size_url, parent_priority) constants of k1,k2,k3,k4 Equation = k1*A/sum + k2*B/sum + k3*C/sum + k4*D/sum"""
-        k1, k2, k3, k4 = 0.25, 0.25, 0.4, 0.1
+        k1, k2, k3, k4 = 0.2, 0.2, 0.4, 0.2
         A, B, C, D = properties[0], properties[1], properties[2], properties[3]
         summation = sum(properties)
-        ret = k1 * A / summation + k2 * B / summation + k3 * C / summation + k4 * D / summation
+        ret = k1 * A / summation + k2 * B / summation + k3 * (1 - (C / summation)) + k4 * D / summation
         return ret
 
     def _get_turn(self):
+        if self.crawled < 100:
+            self.turn += 1
+            self.turn %= self.num_threads
+            return self.turn
         q_sz, dns_sz = [], []
         score = []
         for i in range(self.num_threads):

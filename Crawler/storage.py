@@ -16,11 +16,11 @@ class Storage:
 
     @staticmethod
     @DB_CRAWLER.transaction()
-    def cache_crawled_url(url, content):
+    def cache_crawled_url(url, dns, content, thread_id):
         """save a crawled link return 0 if successfull -1 if database error"""
         try:
             with DB_CRAWLER.atomic():
-                Crawled.create(url=url, content=content, indexed=False, visited=datetime.now().isoformat())
+                Crawled.create(thread_id=thread_id, url=url, dns=dns, content=content, indexed=False, visited=datetime.now().isoformat())
             return 0
         except DatabaseError:
             return -1
