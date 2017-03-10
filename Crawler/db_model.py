@@ -10,7 +10,9 @@ class BaseModel(Model):
 
 
 class Crawled(BaseModel):
+    thread_id = IntegerField()
     url = CharField(unique=True)
+    dns = CharField()
     content = TextField()
     indexed = BooleanField()
     visited = DateTimeField()
