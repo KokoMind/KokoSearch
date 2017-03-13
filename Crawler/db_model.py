@@ -11,6 +11,7 @@ class BaseModel(Model):
 
 
 class Crawled(BaseModel):
+    id = PrimaryKeyField()
     thread_id = IntegerField()
     url = CharField(unique=True)
     dns = CharField()
