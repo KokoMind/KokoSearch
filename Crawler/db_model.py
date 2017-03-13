@@ -15,8 +15,10 @@ class Crawled(BaseModel):
     url = CharField(unique=True)
     dns = CharField()
     content = TextField()
-    indexed = BooleanField()
     visited = DateTimeField()
+    last_visit = DateTimeField()
+    indexed = BooleanField()
+    last_indexed = DateTimeField(null = True)
 
 
 class ToCrawl(BaseModel):
@@ -32,7 +34,6 @@ class Hasher(BaseModel):
 def create_database():
     DB_CRAWLER.connect()
     DB_CRAWLER.create_tables([Crawled, ToCrawl, Hasher], safe=True)
-
 
 # create the database and the schema
 # create_database()
