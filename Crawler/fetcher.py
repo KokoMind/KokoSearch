@@ -7,6 +7,7 @@ import urllib.parse
 from os.path import splitext
 import socket
 
+
 class Fetcher:
     """Class that will fetch the page, validate that it is of type HTML, extract its contents and hyperlinks"""
 
@@ -113,6 +114,8 @@ class Fetcher:
         except:
             return None
 
-    # Test Driver code :D
-code,links,content = Fetcher.fetch('https://wikimediafoundation.org/')
-print(code, content)
+            # Test Driver code :D
+
+# For testing
+# code,links,content = Fetcher.fetch('https://wikimediafoundation.org/')
+# print(code, content)

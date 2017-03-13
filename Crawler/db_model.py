@@ -1,3 +1,4 @@
+"""This file contain the database caching model"""
 from peewee import *
 from playhouse.sqlite_ext import SqliteExtDatabase
 
@@ -33,4 +34,5 @@ def create_database():
     DB_CRAWLER.create_tables([Crawled, ToCrawl, Hasher], safe=True)
 
 
+# create the database and the schema
 create_database()
