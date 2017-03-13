@@ -26,3 +26,27 @@ class DBCacheCrawled(DBWorker):
         else:
             Storage.cache_crawled_url(*self.args)
         pass
+
+
+class DBDeleteCrawled(DBWorker):
+    def run(self):
+        if self.verbose:
+            if Storage.delete_crawled_link(*self.args) == 0:  # Successful
+                print("Broken Crawled link is Deleted successfully from parent " + self.parent_name)
+            else:
+                print("Error Deleting a link")
+        else:
+            Storage.delete_crawled_link(*self.args)
+        pass
+
+
+class DBCacheCrawledRevisit(DBWorker):
+    def run(self):
+        if self.verbose:
+            if Storage.cache_crawled_revisit(*self.args) == 0:  # Successful
+                print("Crawled link is refreshed successfully from parent " + self.parent_name)
+            else:
+                print("Error refreshing a link")
+        else:
+            Storage.cache_crawled_revisit(*self.args)
+        pass
