@@ -1,5 +1,5 @@
 from Crawler.frontier import Frontier, FrontierRevisit
-from Crawler.worker import CrawlerThread
+from Crawler.worker import CrawlerThread, RevisiterThread
 from Crawler.storage import Storage
 
 
@@ -47,7 +47,7 @@ class ControllerRevisit:
         self.db = Storage()
         # Create the workers
         for i in range(num_threads):
-            self.workers.append(CrawlerThread(i, 'CrawlerThread' + str(i), self.frontier))
+            self.workers.append(RevisiterThread(i, 'CrawlerThread' + str(i), self.frontier))
         print("Workers created")
 
     def run(self):
