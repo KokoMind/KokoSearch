@@ -1,7 +1,6 @@
-from Crawler.frontier import Frontier
+from Crawler.frontier import Frontier, FrontierRevisit
 from Crawler.worker import CrawlerThread
 from Crawler.storage import Storage
-
 
 
 class Controller:
@@ -36,3 +35,30 @@ class Controller:
         except KeyboardInterrupt:
             print("saving before exit")
             self.frontier.save_to_crawl()
+
+
+class ControllerRevisit:
+    """The Controller of the hole Revisiting process"""
+
+    def __init__(self, num_threads):
+        self.num_workers = num_threads
+        self.workers = []
+        self.frontier = FrontierRevisit(num_threads)
+        self.db = Storage()
+        # Create the workers
+        for i in range(num_threads):
+            self.workers.append(CrawlerThread(i, 'CrawlerThread' + str(i), self.frontier))
+        print("Workers created")
+
+    def run(self):
+        """The main Program"""
+        try:
+            self.frontier.distribute()
+            for i in range(self.num_workers):
+                self.workers[i].start()
+            print("All Workers started")
+            for i in range(self.num_workers):
+                self.workers[i].join()
+            print("All Workers Finished")
+        except KeyboardInterrupt:
+            print("Program Interrupted")
