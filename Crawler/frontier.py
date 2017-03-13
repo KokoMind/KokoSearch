@@ -101,19 +101,22 @@ class FrontierRevisit:
 
     def get_url(self, thread_id):
         """Get the next url to revisit"""
-        ret = self.queues[thread_id].get()
-        if not ret:
-            return None
+        if self.queues[thread_id].empty():
+            return None, None
         else:
             self.crawled += 1
-            return ret
+            ret = self.queues[thread_id].get()
+            return ret[0], ret[1]
 
     def distribute(self):
         # Get links from database
-        links = Storage.get_crawled()
-        print("distributing")
-        for link in links:
-            self.turn += 1
-            self.turn %= self.num_threads
-            self.queues[self.turn].put(link)
-        print("Distribuing Finished")
+        ret, links = Storage.get_crawled()
+        if ret == 0:
+            print("distributing")
+            for link in links:
+                self.turn += 1
+                self.turn %= self.num_threads
+                self.queues[self.turn].put(link)
+            print("Distribuing Finished")
+        else:
+            print("Error in distributing")
