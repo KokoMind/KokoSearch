@@ -1,5 +1,6 @@
 from Crawler.prioritised_queue import PrioritisedQueue
 from Crawler.storage import Storage
+from queue import Queue
 
 
 class Frontier:
@@ -85,3 +86,34 @@ class Frontier:
             dns_sz.append(len(self.attended_websites[i]))
             score.append(float(q_sz[i] * dns_sz[i]) / (0.7 * float(q_sz[i]) + 0.3 * float(dns_sz[i]) + 0.000000001))
         return score.index(min(score))
+
+
+class FrontierRevisit:
+    """Class which will contain ToCrawl pages in revisiting Process"""
+
+    def __init__(self, num_threads):
+        self.num_threads = num_threads
+        self.queues = []
+        for i in range(num_threads):
+            self.queues.append(Queue())
+        self.turn = -1
+        self.crawled = 0
+
+    def get_url(self, thread_id):
+        """Get the next url to revisit"""
+        ret = self.queues[thread_id].get()
+        if not ret:
+            return None
+        else:
+            self.crawled += 1
+            return ret
+
+    def distribute(self):
+        # Get links from database
+        links = Storage.get_crawled()
+        print("distributing")
+        for link in links:
+            self.turn += 1
+            self.turn %= self.num_threads
+            self.queues[self.turn].put(link)
+        print("Distribuing Finished")
