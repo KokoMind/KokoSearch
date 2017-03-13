@@ -20,7 +20,7 @@ class Storage:
         """save a crawled link return 0 if successfull -1 if database error"""
         try:
             with DB_CRAWLER.atomic():
-                Crawled.create(thread_id=thread_id, url=url, dns=dns, content=content, indexed=False, visited=datetime.now().isoformat())
+                Crawled.create(thread_id=thread_id, url=url, dns=dns, content=content, visited=datetime.now().isoformat(), last_visit=datetime.now().isoformat(), indexed=False)
             return 0
         except DatabaseError:
             return -1
@@ -53,13 +53,58 @@ class Storage:
 
     @staticmethod
     @DB_CRAWLER.transaction()
-    def get_to_crawl(no=None):
+    def get_to_crawl(page=None, no=1000):
         """retrieve links to continue crawling no? for specific number of links return [(value,url,dns),...]"""
         try:
-            if not no:
+            if not page:
                 links = [(link.value, link.url, link.dns) for link in ToCrawl.select()]
             else:
-                links = [(link.value, link.url, link.dns) for link in ToCrawl.select().paginate(1, no)]
+                links = [(link.value, link.url, link.dns) for link in ToCrawl.select().paginate(page, no)]
             return 0, links
         except DatabaseError:
             return -1, None
+
+    @staticmethod
+    @DB_CRAWLER.transaction()
+    def delete_to_crawl():
+        try:
+            DB_CRAWLER.execute_sql("delete from tocrawl")
+            return 0
+        except DatabaseError:
+            return -1
+
+    @staticmethod
+    @DB_CRAWLER.transaction()
+    def get_crawled(page=None, no=1000):
+        """retrieve links to revisit return [(id,url)]"""
+        try:
+            if not page:
+                links = [(link.id, link.url) for link in Crawled.select()]
+            else:
+                links = [(link.id, link.url) for link in Crawled.select().paginate(page, no)]
+            return 0, links
+        except DatabaseError:
+            return -1, None
+
+    @staticmethod
+    @DB_CRAWLER.transaction()
+    def cache_crawled_revisit(uid, content):
+        """save a crawled link return 0 if successfull -1 if database error"""
+        try:
+            with DB_CRAWLER.atomic():
+                query = Crawled.update(content=content, last_visit=datetime.now().isoformat()).where(Crawled.id == uid)
+                query.execute()
+            return 0
+        except DatabaseError:
+            return -1
+
+    @staticmethod
+    @DB_CRAWLER.transaction()
+    def delete_crawled_link(uid):
+        try:
+            with DB_CRAWLER.atomic():
+                query = Crawled.delete().where(Crawled.id == uid)
+                query.execute()
+            return 0
+        except DatabaseError:
+            return -1
