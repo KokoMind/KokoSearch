@@ -35,4 +35,4 @@ def create_database():
 
 
 # create the database and the schema
-create_database()
+# create_database()

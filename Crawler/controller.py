@@ -1,5 +1,7 @@
 from Crawler.frontier import Frontier
 from Crawler.worker import CrawlerThread
+from Crawler.storage import Storage
+
 
 
 class Controller:
@@ -9,6 +11,7 @@ class Controller:
         self.num_workers = num_threads
         self.workers = []
         self.frontier = Frontier(num_threads)
+        self.db = Storage()
         # Create the workers
         for i in range(num_threads):
             self.workers.append(CrawlerThread(i, 'CrawlerThread' + str(i), self.frontier))
