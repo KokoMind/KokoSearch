@@ -6,6 +6,8 @@ from url_normalize import url_normalize
 import urllib.parse
 from os.path import splitext
 import socket
+from reppy.robots import Robots
+from urllib import robotparser
 
 
 class Fetcher:
@@ -13,19 +15,36 @@ class Fetcher:
 
     @staticmethod
     def fetch(url):
+        Threshold = 200
         code, page = Fetcher._download_page(url)
         if code == -1:
             return code, None, None
-
         soup = BeautifulSoup(page, 'lxml')
         content = Fetcher._extract_content(soup, page)
+        content = Fetcher._extract_latin_only(content)
+        if len(content) < Threshold:
+            return -1, None, None
         links = Fetcher._extract_links(soup, page)
         return code, links, content
 
     @staticmethod
+    def _extract_latin_only(content):
+        """Filter the non-latin sentences"""
+        return content.encode('latin-1', errors='ignore').decode('latin-1', errors='ignore')
+
+    @staticmethod
+    def _check_robots(url):
+        """Check that our crawler satisfies robot exclusion standard"""
+        robot_url = Robots.robots_url(url)
+        parse = robotparser.RobotFileParser()
+        parse.set_url(robot_url)
+        parse.read()
+        return parse.can_fetch('*', url)
+
+    @staticmethod
     def _download_page(url):
         """returns data,code. For code, 0 means success and -1 means failure."""
-        if Fetcher._check_url(url):
+        if Fetcher._check_url(url) and Fetcher._check_robots(url):
             try:
                 with urllib.request.urlopen(url) as response:
                     data = response.read().decode('utf-8', 'ignore')
@@ -116,6 +135,5 @@ class Fetcher:
 
             # Test Driver code :D
 
-# For testing
 # code,links,content = Fetcher.fetch('https://wikimediafoundation.org/')
-# print(code, content)
+# print(code, links)
