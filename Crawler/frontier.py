@@ -59,8 +59,20 @@ class Frontier:
 
     def load_to_crawl(self):
         ret_code, links = Storage.get_to_crawl()
+        turn_ = -1
         if ret_code == 0:  # successfull
-            pass
+            for value, url, dns in links:
+                if (not dns) or (Storage.cache_hash(url) == 1):
+                    continue
+                for i in range(self.num_threads):
+                    if dns in self.attended_websites[i]:
+                        self.queues[i].push(value, url, dns)
+                        break
+                else:
+                    turn_ += 1
+                    turn_ %= self.num_threads
+                    self.queues[turn_].push(value, url, dns)
+                    self.attended_websites[turn_][dns] = 1
         else:
             print("Cannot Crawl")
         pass
@@ -68,7 +80,7 @@ class Frontier:
     @staticmethod
     def _calc_priority(properties):
         """Properties (no.out_links, size_parent, size_url, parent_priority) constants of k1,k2,k3,k4 Equation = k1*A/sum + k2*B/sum + k3*C/sum + k4*D/sum"""
-        k1, k2, k3, k4 = 0.2, 0.2, 0.4, 0.2
+        k1, k2, k3, k4 = 0.3, 0.4, 0.2, 0.1
         A, B, C, D = properties[0], properties[1], properties[2], properties[3]
         summation = sum(properties)
         ret = k1 * A / summation + k2 * B / summation + k3 * (1 - (C / summation)) + k4 * D / summation
@@ -79,12 +91,16 @@ class Frontier:
             self.turn += 1
             self.turn %= self.num_threads
             return self.turn
+        for i in range(self.num_threads):
+            if self.queues[i].size == 0:
+                self.turn = i
+                return self.turn
         q_sz, dns_sz = [], []
         score = []
         for i in range(self.num_threads):
             q_sz.append(self.queues[i].size)
             dns_sz.append(len(self.attended_websites[i]))
-            score.append(float(q_sz[i] * dns_sz[i]) / (0.7 * float(q_sz[i]) + 0.3 * float(dns_sz[i]) + 0.000000001))
+            score.append(float(q_sz[i] * dns_sz[i]) / (0.5 * float(q_sz[i]) + 0.5 * float(dns_sz[i]) + 0.000000001))
         return score.index(min(score))
 
 

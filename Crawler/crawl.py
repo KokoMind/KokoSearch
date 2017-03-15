@@ -8,12 +8,12 @@ class Config:
     """Class Config contain the configuration of the crawler and the seeds """
     crawling = True
     revisiting = False
-    num_threads = 4
+    num_threads = 16
     cont_to_crawl = False
     seeds = [('https://en.wikipedia.org/', Fetcher.extract_dns('https://en.wikipedia.org/'), (0, 0, 10, 1)),
-             ('https://www.quora.com/', Fetcher.extract_dns('https://www.quora.com/'), (0, 0, 10, 1)),
-             ('https://www.reddit.com/', Fetcher.extract_dns('https://www.reddit.com/'), (0, 0, 10, 1)),
-             ("http://www.dmoz.org/", Fetcher.extract_dns('https://www.reddit.com/'), (0, 0, 10, 1)),
+             # ('https://www.quora.com/', Fetcher.extract_dns('https://www.quora.com/'), (0, 0, 10, 1)),
+             # ('https://www.reddit.com/', Fetcher.extract_dns('https://www.reddit.com/'), (0, 0, 10, 1)),
+             # ("http://www.dmoz.org/", Fetcher.extract_dns('https://www.reddit.com/'), (0, 0, 10, 1)),
              ]
 
 
