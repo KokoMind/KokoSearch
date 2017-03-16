@@ -19,7 +19,7 @@ class Crawled(BaseModel):
     visited = DateTimeField()
     last_visit = DateTimeField()
     indexed = BooleanField()
-    last_indexed = DateTimeField(null = True)
+    last_indexed = DateTimeField(null=True)
 
 
 class ToCrawl(BaseModel):
