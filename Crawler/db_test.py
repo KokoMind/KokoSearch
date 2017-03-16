@@ -1,7 +1,7 @@
 """File to test database transactions"""
 
-from Crawler.storage import *
-from Crawler.db_worker import *
+from storage import *
+from db_worker import *
 import logging
 
 # logger = logging.getLogger('peewee')

@@ -1,5 +1,5 @@
 import threading
-from Crawler.storage import *
+from storage import *
 
 
 class DBWorker(threading.Thread):

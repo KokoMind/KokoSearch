@@ -1,18 +1,22 @@
-from Crawler.prioritised_queue import PrioritisedQueue
-from Crawler.storage import Storage
+from prioritised_queue import PrioritisedQueue
+from storage import Storage
 from queue import Queue
 
 
 class Frontier:
     """Class which will contain ToCrawl pages"""
 
-    def __init__(self, num_threads):
+    def __init__(self, num_threads, dash_):
         self.num_threads = num_threads
-        self.to_serve, self.queues, self.attended_websites = [], [], []
+        self.dash = dash_
+        self.to_serve, self.queues, self.attended_websites, self.threads_tracking = [], [], [], []
         for i in range(num_threads):
             self.to_serve.append(Queue())
             self.queues.append(PrioritisedQueue())
             self.attended_websites.append({})
+            self.threads_tracking.append({})
+            self.threads_tracking[i]['tocrawl'] = 0
+            self.threads_tracking[i]['dns'] = 0
         self.turn = -1
         self.crawled = 0
 
@@ -55,6 +59,8 @@ class Frontier:
                 turn_ = self._get_turn()
                 self.queues[turn_].push(value, url, dns)
                 self.attended_websites[turn_][dns] = 1
+                self.dash.print_tocrawl(str(self.queues[turn_].size), turn_)
+                self.dash.print_tocrawl(str(self.queues[turn_].size), turn_)
 
     def get_url(self, thread_id):
         ret = self.queues[thread_id].pop()
@@ -90,9 +96,9 @@ class Frontier:
                     turn_ %= self.num_threads
                     self.queues[turn_].push(value, url, dns)
                     self.attended_websites[turn_][dns] = 1
-            print("Links loaded and distributed successfully")
+            # print("Links loaded and distributed successfully")
             Storage.delete_to_crawl()
-            print("Table To crawl cleared successfully")
+            # print("Table To crawl cleared successfully")
         else:
             print("Cannot Crawl")
         pass

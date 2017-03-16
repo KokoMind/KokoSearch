@@ -1,7 +1,7 @@
 """Main file to start crawling process"""
 
-from Crawler.controller import Controller, ControllerRevisit
-from Crawler.fetcher import Fetcher
+from controller import Controller, ControllerRevisit
+from fetcher import Fetcher
 
 
 class Config:
@@ -9,7 +9,7 @@ class Config:
     crawling = True
     revisiting = False
     num_threads = 16
-    cont_to_crawl = True
+    cont_to_crawl = False
     seeds = ['https://en.wikipedia.org/',
              'https://www.reddit.com/',
              "http://www.dmoz.org/",
@@ -38,9 +38,9 @@ def make_seeds(Config):
 def crawl():
     # Get the number of Crawler Threads
     Config.num_threads = int(input("Please Enter the Number of threads to crawl:"))
-    print("Wait for seeds to be ready")
+    # print("Wait for seeds to be ready")
     seeds = make_seeds(Config)
-    print("seeds are ready")
+    # print("seeds are ready")
     crawler = Controller(Config.num_threads, seeds, Config.cont_to_crawl)
     crawler.run()
 

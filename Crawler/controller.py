@@ -1,6 +1,7 @@
-from Crawler.frontier import Frontier, FrontierRevisit
-from Crawler.worker import CrawlerThread, RevisiterThread
-from Crawler.storage import Storage
+from frontier import Frontier, FrontierRevisit
+from worker import CrawlerThread, RevisiterThread
+from storage import Storage
+from dashboard import Dashboard
 
 
 class Controller:
@@ -8,19 +9,21 @@ class Controller:
 
     def __init__(self, num_threads, seeds, cont_to_crawl):
         self.num_workers = num_threads
+        self.dash = Dashboard(num_threads)
         self.workers = []
-        self.frontier = Frontier(num_threads)
+        self.frontier = Frontier(num_threads, self.dash)
         self.db = Storage()
+
         # Create the workers
         for i in range(num_threads):
-            self.workers.append(CrawlerThread(i, 'CrawlerThread' + str(i), self.frontier))
-        print("Workers created")
+            self.workers.append(CrawlerThread(i, 'CrawlerThread' + str(i), self.frontier, self.dash))
+        # print("Workers created")
         # insert seeds in to serve
         if not cont_to_crawl:
             self.frontier.push_to_serve(seeds, 0)
-            print("seeds pushed")
+            # print("seeds pushed")
             self.frontier.distribute()
-            print("seeds distributed")
+            # print("seeds distributed")
         else:
             self.frontier.load_to_crawl()
 
@@ -29,7 +32,7 @@ class Controller:
         try:
             for i in range(self.num_workers):
                 self.workers[i].start()
-            print("All Workers started")
+            # print("All Workers started")
             while True:
                 self.frontier.distribute()
         except KeyboardInterrupt:

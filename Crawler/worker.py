@@ -1,25 +1,27 @@
 import threading
 from aptdaemon import lock
 from Crawler import frontier
-from Crawler.fetcher import Fetcher
-from Crawler.db_worker import DBCacheCrawled, DBDeleteCrawled, DBCacheCrawledRevisit
+from fetcher import Fetcher
+from db_worker import DBCacheCrawled, DBDeleteCrawled, DBCacheCrawledRevisit
 
 
 class CrawlerThread(threading.Thread):
     """Class of a thread to crawl the web"""
 
-    def __init__(self, thread_id, name, frontier_):
+    def __init__(self, thread_id, name, frontier_, dash_):
         """Construct a new crawling thread"""
         threading.Thread.__init__(self)
         self.thread_id = thread_id
         self.daemon = True
         self.name = name
         self.frontier = frontier_
+        self.dash = dash_
+        self.crawled = 0
         self.threadlock = threading.Lock()
 
     def run(self):
         """The starting point of a thread"""
-        print("Thread " + str(self.thread_id) + " started")
+        # print("Thread " + str(self.thread_id) + " started")
         while True:
             # print("get next URL")
             value, current_url, current_dns = self.frontier.get_url(self.thread_id)
@@ -28,7 +30,8 @@ class CrawlerThread(threading.Thread):
                 continue
             code, links, content = Fetcher.fetch(current_url)
             if code == -1:
-                print("Refused from thread " + str(self.thread_id))
+                # print("Refused from thread " + str(self.thread_id))
+                self.dash.print_cur_stat("Refused from thread " + str(self.thread_id), self.thread_id)
                 continue
             # Crawling this link successeded
             # print("URL got from thread " + str(self.thread_id))
@@ -38,7 +41,10 @@ class CrawlerThread(threading.Thread):
             for i in range(len(links)):
                 links_mod.append((links[i][0], links[i][1], (out_links, sz_parent, len(links[i][0]), value)))
 
-            print("URL fetched from thread " + str(self.thread_id))
+            self.dash.print_cur_stat("URL fetched from thread " + str(self.thread_id), self.thread_id)
+            self.crawled += 1
+            self.dash.print_crawled(str(self.crawled), self.thread_id)
+            # print("URL fetched from thread " + str(self.thread_id))
             self.frontier.push_to_serve(links_mod, self.thread_id)
             DBCacheCrawled(0, 'cache_crawled', self.thread_id, self.name, 0, current_url, current_dns, content, self.thread_id).start()
             # print("URL cached  from thread " + str(self.thread_id))

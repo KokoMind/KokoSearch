@@ -22,6 +22,12 @@ class Dashboard:
         print('%s%s%s%s%s' % (self.pos(self.MAXY / 6, 50), Fore.WHITE, Back.BLACK, Style.NORMAL, "Controller"), end='')
         print('%s%s%s%s%s' % (self.pos(self.MAXY / 3, self.MAXX / 2), Fore.WHITE, Back.BLACK, Style.NORMAL, "Crawlers"), end='')
 
+        # initial Prints For Controller with it's settings
+        # TODO
+
+        # initial Prints For Frontier with it's settings
+        # TODO
+
         # initial Prints For threads with it's settings
         self.thread_settings = []
         every = (self.MAXX / 4) + 5
@@ -38,16 +44,24 @@ class Dashboard:
             self.thread_settings[i]['stat_pos'] = self.pos(Y + 2, X + 2)
             self.thread_settings[i]['crawled_pos'] = self.pos(Y + 3, X + 2)
             self.thread_settings[i]['tocrawl_pos'] = self.pos(Y + 4, X + 2)
-            self.thread_settings[i]['dns'] = self.pos(Y + 5, X + 2)
+            self.thread_settings[i]['dns_pos'] = self.pos(Y + 5, X + 2)
             print('%s%s%s%s%s' % (self.pos(Y + 2, X - 15), Fore.WHITE, Back.BLACK, Style.NORMAL, "Current Status:"), end='')
             print('%s%s%s%s%s' % (self.pos(Y + 3, X - 15), Fore.WHITE, Back.BLACK, Style.NORMAL, "CRAWLED:"), end='')
             print('%s%s%s%s%s' % (self.pos(Y + 4, X - 15), Fore.WHITE, Back.BLACK, Style.NORMAL, "TOCRAWL:"), end='')
             print('%s%s%s%s%s' % (self.pos(Y + 5, X - 15), Fore.WHITE, Back.BLACK, Style.NORMAL, "DNS:"), end='')
-            print('%s%s%s%s%s' % (self.thread_settings[i]['stat_pos'], Fore.WHITE, Back.BLACK, Style.DIM, "URL fetched"), end='')
 
     def __del__(self):
         print('%s%s%s%s%s' % (self.pos(self.MAXY, self.MAXX / 2), Fore.RED, Back.WHITE, Style.NORMAL, "BYE BYE"), end='\n')
         print(Style.RESET_ALL)
 
-    def print_cur_status(self, str, thread_id):
-        pass
+    def print_cur_stat(self, str, thread_id):
+        print('%s%s%s%s%s' % (self.thread_settings[thread_id]['stat_pos'], Fore.WHITE, Back.BLACK, Style.DIM, str), end='')
+
+    def print_crawled(self, str, thread_id):
+        print('%s%s%s%s%s' % (self.thread_settings[thread_id]['crawled_pos'], Fore.WHITE, Back.BLACK, Style.DIM, str), end='')
+
+    def print_tocrawl(self, str, thread_id):
+        print('%s%s%s%s%s' % (self.thread_settings[thread_id]['tocrawl_pos'], Fore.WHITE, Back.BLACK, Style.DIM, str), end='')
+
+    def print_dns(self, str, thread_id):
+        print('%s%s%s%s%s' % (self.thread_settings[thread_id]['dns_pos'], Fore.WHITE, Back.BLACK, Style.DIM, str), end='')

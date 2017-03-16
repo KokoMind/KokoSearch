@@ -1,6 +1,6 @@
 """File to handle all database transactions"""
 
-from Crawler.db_model import *
+from db_model import *
 from datetime import datetime
 import hashlib
 
