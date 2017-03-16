@@ -28,7 +28,7 @@ class CrawlerThread(threading.Thread):
                 continue
             code, links, content = Fetcher.fetch(current_url)
             if code == -1:
-                print("Unable to fetch from thread " + str(self.thread_id))
+                print("Refused from thread " + str(self.thread_id))
                 continue
             # Crawling this link successeded
             # print("URL got from thread " + str(self.thread_id))
