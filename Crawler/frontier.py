@@ -87,7 +87,7 @@ class Frontier:
         return ret
 
     def _get_turn(self):
-        if self.crawled < 100:
+        if self.crawled < 1000:
             self.turn += 1
             self.turn %= self.num_threads
             return self.turn
