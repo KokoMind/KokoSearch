@@ -15,7 +15,7 @@ class Fetcher:
 
     @staticmethod
     def fetch(url):
-        Threshold = 200
+        threshold = 200
         code, page = Fetcher._download_page(url)
         if code == -1:
             return code, None, None
@@ -27,7 +27,7 @@ class Fetcher:
         except:
             print("cannot unicode")
             return -1, None, None
-        if len(content) < Threshold:
+        if len(content) < threshold:
             return -1, None, None
         links = Fetcher._extract_links(soup, page)
         return code, links, content
