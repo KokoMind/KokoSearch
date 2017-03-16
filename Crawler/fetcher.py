@@ -21,7 +21,12 @@ class Fetcher:
             return code, None, None
         soup = BeautifulSoup(page, 'lxml')
         content = Fetcher._extract_content(soup, page)
-        content = Fetcher._extract_latin_only(content)
+        # Sorry mostafa for manual editing .. But Just i'm trying some things in my code
+        try:
+            content = Fetcher._extract_latin_only(content)
+        except:
+            print("cannot unicode")
+            return -1, None, None
         if len(content) < Threshold:
             return -1, None, None
         links = Fetcher._extract_links(soup, page)
