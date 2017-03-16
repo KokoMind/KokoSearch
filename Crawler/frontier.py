@@ -8,28 +8,47 @@ class Frontier:
 
     def __init__(self, num_threads):
         self.num_threads = num_threads
-        self.to_serve = []
-        self.queues, self.attended_websites = [], []
+        self.to_serve, self.queues, self.attended_websites = [], [], []
         for i in range(num_threads):
+            self.to_serve.append(Queue())
             self.queues.append(PrioritisedQueue())
             self.attended_websites.append({})
         self.turn = -1
         self.crawled = 0
 
-    def push_to_serve(self, element):
-        self.to_serve.extend(element)
+    def push_to_serve(self, element, thread_id):
+        # [self.to_serve[thread_id].put(ele) for ele in element]
+        for ele in element:
+            self.to_serve[thread_id].put(ele)
+
+    def pop_to_distribute(self):
+        i = -1
+        empty_i = 0
+        while i < self.num_threads:
+            i += 1
+            i %= self.num_threads
+            if not self.to_serve[i].empty():
+                # print("got link")
+                empty_i = 0
+                yield self.to_serve[i].get()
+            else:
+                # print("empty")
+                empty_i += 1
+                pass
+            if empty_i == self.num_threads:
+                break
 
     def distribute(self):
         # print("distributing")
-        while len(self.to_serve):
-            print("serving one link")
-            url, dns, properties = self.to_serve.pop(0)
+        for link in self.pop_to_distribute():
+            # print("serving one link")
+            url, dns, properties = link
             value = Frontier._calc_priority(properties)
-            if (not dns) or (Storage.cache_hash(url) == 1):
+            hashing = Storage.cache_hash(url)
+            if (not dns) or (hashing == 1 or hashing == -1):
                 continue
             for i in range(self.num_threads):
                 if dns in self.attended_websites[i]:
-                    print("found dns ----------------------------")
                     self.queues[i].push(value, url, dns)
                     break
             else:
@@ -62,8 +81,6 @@ class Frontier:
         turn_ = -1
         if ret_code == 0:  # successfull
             for value, url, dns in links:
-                if (not dns) or (Storage.cache_hash(url) == 1):
-                    continue
                 for i in range(self.num_threads):
                     if dns in self.attended_websites[i]:
                         self.queues[i].push(value, url, dns)
@@ -73,6 +90,9 @@ class Frontier:
                     turn_ %= self.num_threads
                     self.queues[turn_].push(value, url, dns)
                     self.attended_websites[turn_][dns] = 1
+            print("Links loaded and distributed successfully")
+            Storage.delete_to_crawl()
+            print("Table To crawl cleared successfully")
         else:
             print("Cannot Crawl")
         pass
@@ -83,7 +103,7 @@ class Frontier:
         k1, k2, k3, k4 = 0.3, 0.4, 0.2, 0.1
         A, B, C, D = properties[0], properties[1], properties[2], properties[3]
         summation = sum(properties)
-        ret = k1 * A / summation + k2 * B / summation + k3 * (1 - (C / summation)) + k4 * D / summation
+        ret = k1 * A / summation + k2 * B / summation + k3 * (1 - (C / summation)) + k4 * (1 - D) / summation
         return ret
 
     def _get_turn(self):

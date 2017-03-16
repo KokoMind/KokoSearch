@@ -9,9 +9,8 @@ class Config:
     crawling = True
     revisiting = False
     num_threads = 16
-    cont_to_crawl = False
+    cont_to_crawl = True
     seeds = ['https://en.wikipedia.org/',
-             'https://www.quora.com/',
              'https://www.reddit.com/',
              "http://www.dmoz.org/",
              "https://www.amazon.com/",
@@ -32,13 +31,14 @@ class Config:
 def make_seeds(Config):
     links = []
     for url in Config.seeds:
-        links.append((url, Fetcher.extract_dns(url), (0, 0, 10, 1)))
+        links.append((url, Fetcher.extract_dns(url), (10000, 10000, 1, 1)))
     return links
 
 
 def crawl():
     # Get the number of Crawler Threads
     Config.num_threads = int(input("Please Enter the Number of threads to crawl:"))
+    print("Wait for seeds to be ready")
     seeds = make_seeds(Config)
     print("seeds are ready")
     crawler = Controller(Config.num_threads, seeds, Config.cont_to_crawl)

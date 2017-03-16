@@ -12,6 +12,7 @@ class CrawlerThread(threading.Thread):
         """Construct a new crawling thread"""
         threading.Thread.__init__(self)
         self.thread_id = thread_id
+        self.daemon = True
         self.name = name
         self.frontier = frontier_
         self.threadlock = threading.Lock()
@@ -25,11 +26,12 @@ class CrawlerThread(threading.Thread):
             if not current_url:
                 # print("Empty Queue from thread " + str(self.thread_id))
                 continue
-            print("URL got from thread " + str(self.thread_id))
             code, links, content = Fetcher.fetch(current_url)
             if code == -1:
                 print("Unable to fetch from thread " + str(self.thread_id))
                 continue
+            # Crawling this link successeded
+            # print("URL got from thread " + str(self.thread_id))
             out_links = len(links)
             sz_parent = len(content)
             links_mod = []
@@ -37,11 +39,9 @@ class CrawlerThread(threading.Thread):
                 links_mod.append((links[i][0], links[i][1], (out_links, sz_parent, len(links[i][0]), value)))
 
             print("URL fetched from thread " + str(self.thread_id))
-            self.threadlock.acquire()
-            self.frontier.push_to_serve(links_mod)
-            self.threadlock.release()
+            self.frontier.push_to_serve(links_mod, self.thread_id)
             DBCacheCrawled(0, 'cache_crawled', self.thread_id, self.name, 0, current_url, current_dns, content, self.thread_id).start()
-            print("URL cached  from thread " + str(self.thread_id))
+            # print("URL cached  from thread " + str(self.thread_id))
 
 
 class RevisiterThread(threading.Thread):

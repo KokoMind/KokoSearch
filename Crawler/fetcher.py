@@ -40,11 +40,16 @@ class Fetcher:
     @staticmethod
     def _check_robots(url):
         """Check that our crawler satisfies robot exclusion standard"""
-        robot_url = Robots.robots_url(url)
-        parse = robotparser.RobotFileParser()
-        parse.set_url(robot_url)
-        parse.read()
-        return parse.can_fetch('*', url)
+        # Mostafa The error of unicode (tele3 fe robots fe handlto)
+        try:
+            robot_url = Robots.robots_url(url)
+            parse = robotparser.RobotFileParser()
+            parse.set_url(robot_url)
+            parse.read()
+            can = parse.can_fetch('*', url)
+            return can
+        except:
+            return True
 
     @staticmethod
     def _download_page(url):
@@ -137,8 +142,6 @@ class Fetcher:
             return socket.gethostbyname(parsed.hostname)
         except:
             return None
-
-            # Test Driver code :D
 
 # code,links,content = Fetcher.fetch('https://wikimediafoundation.org/')
 # print(code, links)

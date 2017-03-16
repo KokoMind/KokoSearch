@@ -17,7 +17,7 @@ class Controller:
         print("Workers created")
         # insert seeds in to serve
         if not cont_to_crawl:
-            self.frontier.push_to_serve(seeds)
+            self.frontier.push_to_serve(seeds, 0)
             print("seeds pushed")
             self.frontier.distribute()
             print("seeds distributed")

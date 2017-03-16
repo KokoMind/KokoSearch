@@ -22,7 +22,7 @@ class Storage:
             with DB_CRAWLER.atomic():
                 Crawled.create(thread_id=thread_id, url=url, dns=dns, content=content, visited=datetime.now().isoformat(), last_visit=datetime.now().isoformat(), indexed=False)
             return 0
-        except DatabaseError:
+        except:
             return -1
 
     @staticmethod
@@ -35,7 +35,7 @@ class Storage:
             return 0
         except IntegrityError:
             return 1
-        except DatabaseError:
+        except:
             return -1
 
     @staticmethod
@@ -48,7 +48,7 @@ class Storage:
                 for idx in range(0, len(data_source), 100):
                     ToCrawl.insert_many(data_source[idx:idx + 100]).execute()
             return 0
-        except DatabaseError:
+        except:
             return -1
 
     @staticmethod
@@ -61,7 +61,7 @@ class Storage:
             else:
                 links = [(link.value, link.url, link.dns) for link in ToCrawl.select().paginate(page, no)]
             return 0, links
-        except DatabaseError:
+        except:
             return -1, None
 
     @staticmethod
@@ -70,7 +70,7 @@ class Storage:
         try:
             DB_CRAWLER.execute_sql("delete from tocrawl")
             return 0
-        except DatabaseError:
+        except:
             return -1
 
     @staticmethod
@@ -83,7 +83,7 @@ class Storage:
             else:
                 links = [(link.id, link.url) for link in Crawled.select().paginate(page, no)]
             return 0, links
-        except DatabaseError:
+        except:
             return -1, None
 
     @staticmethod
@@ -95,7 +95,7 @@ class Storage:
                 query = Crawled.update(content=content, last_visit=datetime.now().isoformat()).where(Crawled.id == uid)
                 query.execute()
             return 0
-        except DatabaseError:
+        except:
             return -1
 
     @staticmethod
@@ -106,5 +106,5 @@ class Storage:
                 query = Crawled.delete().where(Crawled.id == uid)
                 query.execute()
             return 0
-        except DatabaseError:
+        except:
             return -1
