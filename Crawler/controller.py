@@ -38,6 +38,9 @@ class Controller:
         except KeyboardInterrupt:
             print("saving before exit")
             self.frontier.save_to_crawl()
+        except:
+            print("saving before exit")
+            self.frontier.save_to_crawl()
 
 
 class ControllerRevisit:
