@@ -61,7 +61,7 @@ class Frontier:
                 self.queues[turn_].push(value, url, dns)
                 self.attended_websites[turn_][dns] = 1
                 self.dash.print_tocrawl(str(self.queues[turn_].size), turn_)
-                self.dash.print_dns(str(len(self.attended_websites[i])), turn_)
+                self.dash.print_dns(str(len(self.attended_websites[turn_])), turn_)
 
     def get_url(self, thread_id):
         ret = self.queues[thread_id].pop()
@@ -97,6 +97,9 @@ class Frontier:
                     turn_ %= self.num_threads
                     self.queues[turn_].push(value, url, dns)
                     self.attended_websites[turn_][dns] = 1
+            for i in range(self.num_threads):
+                self.dash.print_tocrawl(str(self.queues[i].size), i)
+                self.dash.print_dns(str(len(self.attended_websites[i])), i)
             # print("Links loaded and distributed successfully")
             Storage.delete_to_crawl()
             # print("Table To crawl cleared successfully")
@@ -114,7 +117,7 @@ class Frontier:
         return ret
 
     def _get_turn(self):
-        if self.crawled < 1000:
+        if len(self.attended_websites[0]) < 100:
             self.turn += 1
             self.turn %= self.num_threads
             return self.turn
