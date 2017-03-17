@@ -109,7 +109,12 @@ class Fetcher:
         for i in range(len(extracted_links)):
             # Normalize the url link by converting it to canonical form.
             # For more info, refer to https://pypi.python.org/pypi/urlnorm
-            extracted_links[i] = url_normalize(extracted_links[i])
+            # MOSTAFA HERE IS an exception
+            # It gives me an exception sometimes
+            try:
+                extracted_links[i] = url_normalize(extracted_links[i])
+            except:
+                extracted_links[i] = 'https://en.wikipedia.org/'
             extracted_links[i] = extracted_links[i].replace("%3A", ":")  # Restore the ":" character back.
             if Fetcher._check_ext_html(extracted_links[i]):
                 links.append((extracted_links[i], Fetcher.extract_dns(extracted_links[i])))
