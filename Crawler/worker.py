@@ -15,6 +15,7 @@ class CrawlerThread(threading.Thread):
         self.frontier = frontier_
         self.dash = dash_
         self.crawled = 0
+        self.refused = 0
         self.threadlock = threading.Lock()
 
     def run(self):
@@ -33,6 +34,8 @@ class CrawlerThread(threading.Thread):
             if code == -1:
                 # print("Refused from thread " + str(self.thread_id))
                 self.dash.print_cur_stat("Refused url", self.thread_id)
+                self.refused += 1
+                self.dash.print_refused(str(self.refused), self.thread_id)
                 continue
             self.dash.print_cur_stat("Accepted url", self.thread_id)
             # Crawling this link successeded
