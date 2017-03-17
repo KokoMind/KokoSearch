@@ -54,13 +54,14 @@ class Frontier:
             for i in range(self.num_threads):
                 if dns in self.attended_websites[i]:
                     self.queues[i].push(value, url, dns)
+                    self.dash.print_tocrawl(str(self.queues[i].size), i)
                     break
             else:
                 turn_ = self._get_turn()
                 self.queues[turn_].push(value, url, dns)
                 self.attended_websites[turn_][dns] = 1
                 self.dash.print_tocrawl(str(self.queues[turn_].size), turn_)
-                self.dash.print_tocrawl(str(self.queues[turn_].size), turn_)
+                self.dash.print_dns(str(len(self.attended_websites[i])), turn_)
 
     def get_url(self, thread_id):
         ret = self.queues[thread_id].pop()
