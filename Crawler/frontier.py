@@ -110,7 +110,7 @@ class Frontier:
     @staticmethod
     def _calc_priority(properties):
         """Properties (no.out_links, size_parent, size_url, parent_priority) constants of k1,k2,k3,k4 Equation = k1*A/sum + k2*B/sum + k3*C/sum + k4*D/sum"""
-        k1, k2, k3, k4 = 0.3, 0.4, 0.2, 0.1
+        k1, k2, k3, k4 = 0.4, 0.4, 0.1, 0.1
         A, B, C, D = properties[0], properties[1], properties[2], properties[3]
         summation = sum(properties)
         ret = k1 * A / summation + k2 * B / summation + k3 * (1 - (C / summation)) + k4 * (1 - D) / summation

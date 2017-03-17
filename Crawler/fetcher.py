@@ -15,7 +15,7 @@ class Fetcher:
 
     @staticmethod
     def fetch(url):
-        threshold = 200
+        threshold = 20
         code, page = Fetcher._download_page(url)
         if code == -1:
             return code, None, None

@@ -11,27 +11,28 @@ class Config:
     num_threads = 16
     cont_to_crawl = False
     seeds = ['https://en.wikipedia.org/',
-             'https://www.reddit.com/',
-             "http://www.dmoz.org/",
-             "https://www.amazon.com/",
-             "http://www.ebay.com/",
-             "https://en-maktoob.yahoo.com/",
              "http://www.W3.org/",
+             "http://web.mit.edu/",
              "http://stanford.edu/",
-             "https://www.cnet.com/",
              "http://www.berkeley.edu/",
+             "https://www.cam.ac.uk/",
+             "http://www.ox.ac.uk/",
+             "http://www.caltech.edu/",
+             "http://www.dmoz.org/",
+             "http://www.ebay.com/",
+             "https://www.cnet.com/",
              "https://www.spotify.com/",
-             "http://www.springer.com/",
              "https://archive.org/",
              "http://www.ieee.org/",
-             "http://www.nike.com/"
+             "http://www.nike.com/",
+             "https://en-maktoob.yahoo.com/"
              ]
 
 
 def make_seeds(Config):
     links = []
     for url in Config.seeds:
-        links.append((url, Fetcher.extract_dns(url), (10000, 10000, 1, 1)))
+        links.append((url, Fetcher.extract_dns(url), (1000000, 1000000, 1, 1)))
     return links
 
 
