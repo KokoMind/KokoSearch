@@ -21,12 +21,6 @@ class Fetcher:
             return code, None, None
         soup = BeautifulSoup(page, 'lxml')
         content = Fetcher._extract_content(soup, page)
-        # Sorry mostafa for manual editing .. But Just i'm trying some things in my code
-        try:
-            content = Fetcher._extract_latin_only(content)
-        except:
-            print("cannot unicode")
-            return -1, None, None
         if len(content) < threshold:
             return -1, None, None
         links = Fetcher._extract_links(soup, page)
@@ -35,19 +29,17 @@ class Fetcher:
     @staticmethod
     def _extract_latin_only(content):
         """Filter the non-latin sentences"""
-        return content.encode('latin-1', errors='ignore').decode('latin-1', errors='ignore')
+        return content.encode('ascii', errors='ignore').decode('ascii', errors='ignore')
 
     @staticmethod
     def _check_robots(url):
         """Check that our crawler satisfies robot exclusion standard"""
-        # Mostafa The error of unicode (tele3 fe robots fe handlto)
         try:
             robot_url = Robots.robots_url(url)
             parse = robotparser.RobotFileParser()
             parse.set_url(robot_url)
             parse.read()
-            can = parse.can_fetch('*', url)
-            return can
+            return parse.can_fetch('*', url)
         except:
             return True
 
@@ -57,7 +49,7 @@ class Fetcher:
         if Fetcher._check_url(url) and Fetcher._check_robots(url):
             try:
                 with urllib.request.urlopen(url) as response:
-                    data = response.read().decode('utf-8', 'ignore')
+                    data = response.read().decode('ascii', 'ignore')
                     return 0, data
             except:
                 return -1, None
@@ -114,7 +106,8 @@ class Fetcher:
             try:
                 extracted_links[i] = url_normalize(extracted_links[i])
             except:
-                extracted_links[i] = 'https://en.wikipedia.org/'
+                i -= 1
+                continue
             extracted_links[i] = extracted_links[i].replace("%3A", ":")  # Restore the ":" character back.
             if Fetcher._check_ext_html(extracted_links[i]):
                 links.append((extracted_links[i], Fetcher.extract_dns(extracted_links[i])))
@@ -126,7 +119,7 @@ class Fetcher:
             try:
                 response = urllib.request.urlopen('http://www.google.com', timeout=timeout)
                 return True
-            except urllib.request.URLError as err:
+            except:
                 pass
         return False
 
