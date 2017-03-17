@@ -48,7 +48,10 @@ class Frontier:
             # print("serving one link")
             url, dns, properties = link
             value = Frontier._calc_priority(properties)
-            hashing = Storage.cache_hash(url)
+            try:
+                hashing = Storage.cache_hash(url)
+            except:
+                hashing = 0
             if (not dns) or (hashing == 1 or hashing == -1):
                 continue
             for i in range(self.num_threads):
