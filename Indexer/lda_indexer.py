@@ -1,18 +1,22 @@
-from .inverted_indexer import  Indexer
+from db_model import *
+from inverted_indexer import  Indexer
 from gensim.models.ldamulticore import  LdaMulticore
 import gensim
 import operator
-from Indexer.db_model import *
-from Indexer.utils import *
+
 class Lda_Indexer(Indexer):
-    def __init__(self,_id2word_file,corpus_file,num_topics=500,load=None):
-        super.__init__()
+    def __init__(self,_id2word_file,corpus_file,num_topics=500,load=None,train=False):
+        super().__init__()
         self.num_topics=num_topics
         self._id2word_file=_id2word_file
-        self._id2word_file=corpus_file
+        self._corpus_file=corpus_file
         self._construct_corpus()
         if load != None:
             gensim.models.ldamodel.LdaModel.load(load)
+        if train:
+            self._train_model()
+
+
     def fill_topics(self):
         #to be continued (add num of docs)
         for i in range(self.num_topics):
@@ -21,12 +25,15 @@ class Lda_Indexer(Indexer):
 
     def _construct_corpus(self):
         self._id2word = gensim.corpora.Dictionary.load_from_text(self._id2word_file)
-        self._corpus = gensim.corpora.MmCorpus(self.corpus_file)
+        self._corpus = gensim.corpora.MmCorpus(self._corpus_file)
 
     def _train_model(self):
-        self._lda = LdaMulticore(corpus=self._corpus, id2word=self.id2word, num_topics=self.num_topics, chunksize=10000, passes=1)
+        print("Start_Training")
+        self._lda = LdaMulticore(corpus=self._corpus, id2word=self._id2word, num_topics=self.num_topics, workers=1, chunksize=10000, passes=1)
+        print("Training Done")
+        print("Start Saving")
         self._save_model()
-
+        print("Saving Done")
     def _save_model(self):
         self._lda.save('lda.model')
 
