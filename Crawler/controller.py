@@ -2,6 +2,7 @@ from frontier import Frontier, FrontierRevisit
 from worker import CrawlerThread, RevisiterThread
 from storage import Storage
 from dashboard import Dashboard
+from periodic import PeriodicThread
 
 
 class Controller:
@@ -33,13 +34,12 @@ class Controller:
             for i in range(self.num_workers):
                 self.workers[i].start()
             # print("All Workers started")
+            self.saver_to_crawl = PeriodicThread(self.frontier.save_to_crawl, 30.0)
+            self.saver_to_crawl.start()
             while True:
                 self.frontier.distribute()
-        except KeyboardInterrupt:
-            print("saving before exit")
-            self.frontier.save_to_crawl()
         except:
-            print("saving before exit")
+            self.dash.print_frontier_stat("saving before exit")
             self.frontier.save_to_crawl()
 
 
