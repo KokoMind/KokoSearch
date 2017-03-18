@@ -2,15 +2,27 @@
 from peewee import *
 from playhouse.sqlite_ext import SqliteExtDatabase
 
-DB_CRAWLER = SqliteExtDatabase('Crawler_cache.db')
+DB_CRAWLED = SqliteExtDatabase('crawled_cache.db')
+DB_HASHER = SqliteExtDatabase('hasher_cache.db')
+DB_TOCRAWL = SqliteExtDatabase('tocrawl_cache.db')
 
 
-class BaseModel(Model):
+class BaseModelCrawled(Model):
     class Meta:
-        database = DB_CRAWLER
+        database = DB_CRAWLED
 
 
-class Crawled(BaseModel):
+class BaseModelHasher(Model):
+    class Meta:
+        database = DB_HASHER
+
+
+class BaseModelToCrawl(Model):
+    class Meta:
+        database = DB_TOCRAWL
+
+
+class Crawled(BaseModelCrawled):
     id = PrimaryKeyField()
     thread_id = IntegerField()
     url = CharField(unique=True)
@@ -22,19 +34,30 @@ class Crawled(BaseModel):
     last_indexed = DateTimeField(null=True)
 
 
-class ToCrawl(BaseModel):
+class ToCrawl(BaseModelToCrawl):
     url = TextField()
     dns = CharField()
     value = DoubleField()
 
 
-class Hasher(BaseModel):
+class Hasher(BaseModelHasher):
     hash = CharField(max_length=42, unique=True, index=True, null=False)
 
 
 def create_database():
-    DB_CRAWLER.connect()
-    DB_CRAWLER.create_tables([Crawled, ToCrawl, Hasher], safe=True)
+    DB_CRAWLED.connect()
+    DB_HASHER.connect()
+    DB_TOCRAWL.connect()
+    DB_CRAWLED.create_tables([Crawled], safe=True)
+    DB_HASHER.create_tables([Hasher], safe=True)
+    DB_TOCRAWL.create_tables([ToCrawl], safe=True)
+    DB_CRAWLED.close()
+    DB_HASHER.close()
+    DB_TOCRAWL.close()
+
 
 # create the database and the schema
 # create_database()
+
+if __name__ == '__main__':
+    create_database()
