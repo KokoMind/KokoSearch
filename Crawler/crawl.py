@@ -10,10 +10,20 @@ class Config:
     revisiting = False
     num_threads = 16
     cont_to_crawl = False
-    seeds = ['https://en.wikipedia.org/',
+    seeds = ["https://en.wikipedia.org/",
              "http://www.W3.org/",
              "http://web.mit.edu/",
              "http://stanford.edu/",
+             "https://www.rottentomatoes.com/",
+             "http://www.imdb.com/",
+             "http://screenrant.com/",
+             "https://vimeo.com/",
+             "http://www.100bestwebsites.org/",
+             "http://www.makeuseof.com/tag/best-websites-internet/",
+             "https://moz.com/top500",
+             "https://www.bloomberg.com/",
+             "https://www.reddit.com/r/Futurology/comments/48b5oc/best_of_2015_winners/",
+             "https://moz.com/blog",
              "http://www.berkeley.edu/",
              "https://www.cam.ac.uk/",
              "http://www.ox.ac.uk/",
