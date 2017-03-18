@@ -80,11 +80,16 @@ class Frontier:
             arg.extend(self.queues[i].queue_to_list())
         if len(arg) == 0:
             return
+        ret = Storage.delete_to_crawl()
+        if ret == 0:  # successful
+            self.dash.print_frontier_stat("To_Crawl links are deleted success")
+        else:
+            self.dash.print_frontier_stat("Error. Cannot delete TO_crawl links")
         ret = Storage.cache_to_crawl(arg)
         if ret == 0:  # successful
-            print("To_Crawl links are successfully cached")
+            self.dash.print_frontier_stat("To_Crawl links are successfully cached")
         else:
-            print("Error. Links 'To_crawl' are lost!")
+            self.dash.print_frontier_stat("Error. Links 'To_crawl' are lost!")
 
     def load_to_crawl(self):
         ret_code, links = Storage.get_to_crawl()
@@ -104,10 +109,14 @@ class Frontier:
                 self.dash.print_tocrawl(str(self.queues[i].size), i)
                 self.dash.print_dns(str(len(self.attended_websites[i])), i)
             # print("Links loaded and distributed successfully")
-            Storage.delete_to_crawl()
-            # print("Table To crawl cleared successfully")
+            ret = Storage.delete_to_crawl()
+            if ret == 0:  # successful
+                self.dash.print_frontier_stat("To_Crawl links are deleted success")
+            else:
+                self.dash.print_frontier_stat("Error. Cannot delete TO_crawl links")
+                # print("Table To crawl cleared successfully")
         else:
-            print("Cannot Crawl")
+            self.dash.print_frontier_stat("Cannot Crawl")
         pass
 
     @staticmethod
