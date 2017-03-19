@@ -34,7 +34,7 @@ class Controller:
             for i in range(self.num_workers):
                 self.workers[i].start()
             # print("All Workers started")
-            self.saver_to_crawl = PeriodicThread(self.frontier.save_to_crawl, 30.0)
+            self.saver_to_crawl = PeriodicThread(self.frontier.save_to_crawl, 3600.0)
             self.saver_to_crawl.start()
             while True:
                 self.frontier.distribute()
