@@ -1,7 +1,7 @@
 import threading
 from fetcher import Fetcher
 from db_worker import DBCacheCrawled, DBDeleteCrawled, DBCacheCrawledRevisit
-
+from storage import Storage
 
 class CrawlerThread(threading.Thread):
     """Class of a thread to crawl the web"""
