@@ -3,6 +3,7 @@ from fetcher import Fetcher
 from db_worker import DBCacheCrawled, DBDeleteCrawled, DBCacheCrawledRevisit
 from storage import Storage
 
+
 class CrawlerThread(threading.Thread):
     """Class of a thread to crawl the web"""
 
@@ -51,7 +52,7 @@ class CrawlerThread(threading.Thread):
             self.dash.print_crawled(str(self.crawled), self.thread_id)
             # print("URL fetched from thread " + str(self.thread_id))
             self.frontier.push_to_serve(links_mod, self.thread_id)
-            Storage.cache_crawled_url(current_url, current_dns, content, self.thread_id)
+            DBCacheCrawled(0, 'cache_crawled', self.thread_id, self.name, 0, current_url, current_dns, content, self.thread_id).start()
             # print("URL cached  from thread " + str(self.thread_id))
             # self.dash.print_cur_stat("Cached link", self.thread_id)
 
