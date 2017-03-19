@@ -9,7 +9,7 @@ class Config:
     crawling = True
     revisiting = False
     num_threads = 16
-    cont_to_crawl = True
+    cont_to_crawl = False
     seeds = ["https://en.wikipedia.org/",
              "http://www.W3.org/",
              "http://web.mit.edu/",

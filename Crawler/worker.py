@@ -4,6 +4,7 @@ from db_worker import DBCacheCrawled, DBDeleteCrawled, DBCacheCrawledRevisit
 from storage import Storage
 import multiprocessing
 
+
 class CrawlerThread(threading.Thread):
     """Class of a thread to crawl the web"""
 
