@@ -129,7 +129,7 @@ class Frontier:
         return ret
 
     def _get_turn(self):
-        if len(self.attended_websites[0]) < 100:
+        if len(self.attended_websites[0]) < 10:
             self.turn += 1
             self.turn %= self.num_threads
             return self.turn
