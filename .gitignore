@@ -94,3 +94,5 @@ Crawler/Crawler_cache.db
 
 *.db
 trained_*
+
+*.jar
