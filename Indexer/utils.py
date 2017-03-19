@@ -10,7 +10,7 @@ class Stemmer:
             for prefix in self._prefixes:
                 if word.find(prefix, len(word) - len(prefix) - 1) != -1:
                     word = word[:len(word) - len(prefix)]
-                    if word[-1] == word[-2]:
+                    if len(word) > 1 and word[-1] == word[-2]:
                         word = word[:len(word) - 1]
         return word
 
