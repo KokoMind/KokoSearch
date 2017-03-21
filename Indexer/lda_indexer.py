@@ -56,5 +56,5 @@ class Lda_Indexer(Indexer):
             doc_tuple = self._get_Document(page_url)
             self._add_document(page_url,top_topics[0],top_topics[1],top_topics[2],top_topics[3],top_topics[4])
 
-        page = self._get_next_page()
+            page = self._get_next_page()
 
