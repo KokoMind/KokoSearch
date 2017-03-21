@@ -40,7 +40,7 @@ class InvertedIndexer(Indexer):
         self.flushed_docs = 0
         self.flushed_word_doc = 0
         self.flushed_words = 0
-        self.inverted_collection = db['inverted_indexer']
+        self.inverted_collection = self.db['inverted_indexer']
 
     def _get_word(self, word):
         """get word from the inverted indexer database"""
@@ -99,34 +99,34 @@ class InvertedIndexer(Indexer):
 
             page = self._get_next_page()
 
-        def flush_to_disk(self):
-            print('documents: ', Document.select().count())
-            print('words', Word.select().count())
-            print('word_docs', Word_Doc.select().count())
+    def flush_to_disk(self):
+        print('documents: ', Document.select().count())
+        print('words', Word.select().count())
+        print('word_docs', Word_Doc.select().count())
 
-            docs_data = []
-            for doc in Document.select().where(Document.id > self.flushed_docs):
-                docs_data.append({'url': doc.url, 'c1': 0, 'c2': 0, 'c3': 0, 'c4': 0, 'c5': 0})
+        docs_data = []
+        for doc in Document.select().where(Document.id > self.flushed_docs):
+            docs_data.append({'url': doc.url, 'c1': 0, 'c2': 0, 'c3': 0, 'c4': 0, 'c5': 0})
 
-            with db.atomic():
-                DocumentDisk.insert_many(docs_data[:100]).execute()
+        with db.atomic():
+            DocumentDisk.insert_many(docs_data[:100]).execute()
 
-            self.flushed_docs = Document.select().count()
+        self.flushed_docs = Document.select().count()
 
-            word_data = []
-            for word in Word.select().where(Word.id > self.flushed_words):
-                word_data.append({'word': word.word, 'num_of_docs': 0})
+        word_data = []
+        for word in Word.select().where(Word.id > self.flushed_words):
+            word_data.append({'word': word.word, 'num_of_docs': 0})
 
-            with db.atomic():
-                WordDisk.insert_many(word_data[:100]).execute()
+        with db.atomic():
+            WordDisk.insert_many(word_data[:100]).execute()
 
-            self.flushed_words = Word.select().count()
+        self.flushed_words = Word.select().count()
 
-            word_doc_data = []
-            for word_doc in Word_Doc.select().where(Word_Doc.id > self.flushed_word_doc):
-                word_doc_data.append({'doc_id': word_doc.doc_id, 'word_id': word_doc.word_id, 'pos': word_doc.pos, 'neighbours': word_doc.neighbours})
+        word_doc_data = []
+        for word_doc in Word_Doc.select().where(Word_Doc.id > self.flushed_word_doc):
+            word_doc_data.append({'doc_id': word_doc.doc_id, 'word_id': word_doc.word_id, 'pos': word_doc.pos, 'neighbours': word_doc.neighbours})
 
-            with db.atomic():
-                Word_DocDisk.insert_many(word_doc_data[:100]).execute()
+        with db.atomic():
+            Word_DocDisk.insert_many(word_doc_data[:100]).execute()
 
-            self.flushed_word_doc = Word_Doc.select().count()
+        self.flushed_word_doc = Word_Doc.select().count()
