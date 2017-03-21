@@ -1,35 +1,36 @@
 from Indexer.utils import *
 import Crawler.db_model as c_db
 from pymongo import MongoClient
+import threading
 
 
 class Indexer:
     def __init__(self):
+        super(Indexer, self).__init__()
         self._read_cnt = 1
         self._stemmer = Stemmer()
         self._tokenizer = Tokenizer()
         self._detector = StopWordsDetector()
         self.db = MongoClient()['indexer_database']
 
+
+class InvertedIndexer(Indexer, threading.Thread):
+    """the inverted indexer class"""
+
+    def __init__(self, thread_id, threads_num):
+        super().__init__()
+        self._read_cnt = thread_id + 1
+        self._threads_num = threads_num
+        self.inverted_collection = self.db['inverted_indexer']
+
     def _get_next_page(self):
         """get next page from the crawler database"""
         try:
             page = c_db.Crawled.get(c_db.Crawled.id == self._read_cnt)
-            self._read_cnt += 1
+            self._read_cnt += self._threads_num
             return page
         except c_db.Crawled.DoesNotExist:
             return -1
-
-
-class InvertedIndexer(Indexer):
-    """the inverted indexer class"""
-
-    def __init__(self):
-        super().__init__()
-        self.flushed_docs = 0
-        self.flushed_word_doc = 0
-        self.flushed_words = 0
-        self.inverted_collection = self.db['inverted_indexer']
 
     def _insert_record(self, word, url, pos, neighbours):
         record = {"word": word,
@@ -41,10 +42,9 @@ class InvertedIndexer(Indexer):
     def index(self):
         """fill the inverted indexer database"""
         page = self._get_next_page()
-        x = 0
+
         while page != -1:
-            x += 1
-            print(x)
+            print(self._read_cnt)
 
             # process over doc
             page_text = page.content.lower()
@@ -67,3 +67,6 @@ class InvertedIndexer(Indexer):
                 self._insert_record(stemmed, page_url, i, neighbours)
 
             page = self._get_next_page()
+
+    def run(self):
+        self.index()

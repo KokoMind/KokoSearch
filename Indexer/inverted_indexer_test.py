@@ -1,5 +1,7 @@
 from Indexer.inverted_indexer import *
 
-my_indexer = InvertedIndexer()
+threads = []
 
-my_indexer.index()
+for i in range(4):
+    threads.append(InvertedIndexer(i, 4))
+    threads[i].start()  # This actually causes the thread to run
