@@ -7,7 +7,6 @@ from pymongo import MongoClient
 
 class Indexer:
     def __init__(self):
-        create_data_base()
         self._read_cnt = 1
         self._stemmer = Stemmer()
         self._tokenizer = Tokenizer()
@@ -23,14 +22,6 @@ class Indexer:
         except c_db.Crawled.DoesNotExist:
             return -1
 
-    def _get_Document(self, url):
-        """get word from the inverted indexer database"""
-        try:
-            doc = Document.get(Document.url == url)
-            return doc
-        except Document.DoesNotExist:
-            return -1
-
 
 class InvertedIndexer(Indexer):
     """the inverted indexer class"""
@@ -41,26 +32,6 @@ class InvertedIndexer(Indexer):
         self.flushed_word_doc = 0
         self.flushed_words = 0
         self.inverted_collection = self.db['inverted_indexer']
-
-    def _get_word(self, word):
-        """get word from the inverted indexer database"""
-        try:
-            word = Word.get(Word.word == word)
-            return word
-        except Word.DoesNotExist:
-            return -1
-
-    def _add_word(self, word):
-        """add word to the inverted indexer database"""
-        return Word.create(word=word, num_of_docs=0)
-
-    def _add_document(self, url):
-        """add document to the inverted indexer database"""
-        return Document.create(url=url)
-
-    def _add_connection(self, word_id, doc_id, pos, neighbours):
-        """add connection between document and word"""
-        return Word_Doc.create(doc_id=doc_id, word_id=word_id, pos=pos, neighbours=neighbours)
 
     def _insert_record(self, word, url, pos, neighbours):
         record = {"word": word,
@@ -98,35 +69,3 @@ class InvertedIndexer(Indexer):
                 self._insert_record(stemmed, page_url, i, neighbours)
 
             page = self._get_next_page()
-
-    def flush_to_disk(self):
-        print('documents: ', Document.select().count())
-        print('words', Word.select().count())
-        print('word_docs', Word_Doc.select().count())
-
-        docs_data = []
-        for doc in Document.select().where(Document.id > self.flushed_docs):
-            docs_data.append({'url': doc.url, 'c1': 0, 'c2': 0, 'c3': 0, 'c4': 0, 'c5': 0})
-
-        with db.atomic():
-            DocumentDisk.insert_many(docs_data[:100]).execute()
-
-        self.flushed_docs = Document.select().count()
-
-        word_data = []
-        for word in Word.select().where(Word.id > self.flushed_words):
-            word_data.append({'word': word.word, 'num_of_docs': 0})
-
-        with db.atomic():
-            WordDisk.insert_many(word_data[:100]).execute()
-
-        self.flushed_words = Word.select().count()
-
-        word_doc_data = []
-        for word_doc in Word_Doc.select().where(Word_Doc.id > self.flushed_word_doc):
-            word_doc_data.append({'doc_id': word_doc.doc_id, 'word_id': word_doc.word_id, 'pos': word_doc.pos, 'neighbours': word_doc.neighbours})
-
-        with db.atomic():
-            Word_DocDisk.insert_many(word_doc_data[:100]).execute()
-
-        self.flushed_word_doc = Word_Doc.select().count()
