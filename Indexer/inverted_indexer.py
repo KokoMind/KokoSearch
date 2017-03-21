@@ -1,6 +1,8 @@
 from Indexer.db_model import *
 from Indexer.utils import *
 import Crawler.db_model as c_db
+import pymongo
+from pymongo import MongoClient
 
 
 class Indexer:
@@ -10,6 +12,7 @@ class Indexer:
         self._stemmer = Stemmer()
         self._tokenizer = Tokenizer()
         self._detector = StopWordsDetector()
+        self.db = MongoClient()['indexer_database']
 
     def _get_next_page(self):
         """get next page from the crawler database"""
@@ -64,7 +67,7 @@ class InvertedIndexer(Indexer):
         x = 0
         while page != -1:
             x += 1
-            print(x)
+            # print(x)
 
             if x % 501 == 0:
                 self.flush_to_disk()
@@ -72,6 +75,8 @@ class InvertedIndexer(Indexer):
             page_text = page.content
             page_text = page_text.lower()
             page_url = page.url
+
+            print(len(page_text.split()))
 
             with db.atomic():
                 doc_tuple = self._get_Document(page_url)
