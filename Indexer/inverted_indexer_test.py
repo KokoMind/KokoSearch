@@ -1,5 +1,5 @@
 from Indexer.inverted_indexer import *
-import timeit
+import time
 
 
 def test():
@@ -13,4 +13,8 @@ def test():
         threads[i].join()
 
 
-print(timeit.timeit(test()))
+start_time = time.time()
+
+test()
+
+print("--- %s seconds ---" % (time.time() - start_time))

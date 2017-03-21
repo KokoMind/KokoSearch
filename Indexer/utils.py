@@ -33,15 +33,16 @@ class StopWordsDetector:
         self._stop_words = [x.strip() for x in content]
 
     def is_stop_word(self, word):
-        return word in self._stop_words
+        return (word in self._stop_words) or any(char.isdigit() for char in word)
 
-    def remove_stop_words(self,lis):
-        lis=lis.split()
-        s=""
+    def remove_stop_words(self, lis):
+        lis = lis.split()
+        s = ""
         for i in lis:
             if not self.is_stop_word(i):
-                s+=i+" "
+                s += i + " "
         return s
+
 
 def sentence_parser(page):
     sents = nltk.sent_tokenize(page)
