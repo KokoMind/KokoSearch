@@ -28,6 +28,12 @@ class InvertedIndexer(Indexer, threading.Thread):
         try:
             page = c_db.Crawled.get(c_db.Crawled.id == self._read_cnt)
             self._read_cnt += self._threads_num
+
+            # to test performance
+            if self._read_cnt > 1000:
+                return -1
+            ###
+
             return page
         except c_db.Crawled.DoesNotExist:
             return -1
