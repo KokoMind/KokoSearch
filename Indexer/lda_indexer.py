@@ -3,7 +3,8 @@ from inverted_indexer import  Indexer
 from gensim.models.ldamulticore import  LdaMulticore
 import gensim
 import operator
-
+import Crawler.db_model as c_db
+import threading
 class Lda_Indexer(Indexer):
     def __init__(self,_id2word_file,corpus_file,num_topics=500,load=None,train=False):
         super().__init__()
@@ -11,12 +12,23 @@ class Lda_Indexer(Indexer):
         self._id2word_file=_id2word_file
         self._corpus_file=corpus_file
         self._construct_corpus()
+        self._cnt=[]
+        self.threads_num=4
         if load != None:
             self._load_model()
         if train:
             self._train_model()
         self.lda_collection = self.db['lda_indexer']
 
+
+    def _get_next_page(self,id):
+        """get next page from the crawler database"""
+        try:
+            page = c_db.Crawled.get(c_db.Crawled.id == self._cnt[id])
+            self._cnt[id] += self.threads_num
+            return page
+        except c_db.Crawled.DoesNotExist:
+            return -1
 
     def _construct_corpus(self):
         self._id2word = gensim.corpora.Dictionary.load_from_text(self._id2word_file)
@@ -47,8 +59,8 @@ class Lda_Indexer(Indexer):
 
 
 
-    def index(self):
-        page = self._get_next_page()
+    def index(self,id):
+        page = self._get_next_page(id)
         while page != -1:
             page_text = page.content
             page_url = page.url
@@ -56,5 +68,11 @@ class Lda_Indexer(Indexer):
             doc_tuple = self._get_Document(page_url)
             self._add_document(page_url,top_topics[0],top_topics[1],top_topics[2],top_topics[3],top_topics[4])
 
-            page = self._get_next_page()
+            page = self._get_next_page(id)
 
+    def index_all(self):
+        for i in range(self.threads_num):
+            self._cnt.append(i+1)
+            t = threading.Thread(target=self.index, args=(i))
+            t.daemon = True
+            t.start()

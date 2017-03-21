@@ -5,16 +5,16 @@ from pymongo import MongoClient
 
 class Indexer:
     def __init__(self):
-        self._read_cnt = 1
+        self._read_cnt
         self._stemmer = Stemmer()
         self._tokenizer = Tokenizer()
         self._detector = StopWordsDetector()
         self.db = MongoClient()['indexer_database']
 
-    def _get_next_page(self):
+    def _get_next_page(self,id):
         """get next page from the crawler database"""
         try:
-            page = c_db.Crawled.get(c_db.Crawled.id == self._read_cnt)
+            page = c_db.Crawled.get(c_db.Crawled.id == self._read_cnt )
             self._read_cnt += 1
             return page
         except c_db.Crawled.DoesNotExist:
