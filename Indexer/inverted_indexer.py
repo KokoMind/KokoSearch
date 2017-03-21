@@ -1,7 +1,5 @@
-from Indexer.db_model import *
 from Indexer.utils import *
 import Crawler.db_model as c_db
-import pymongo
 from pymongo import MongoClient
 
 
