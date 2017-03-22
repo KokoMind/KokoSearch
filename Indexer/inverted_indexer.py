@@ -5,20 +5,20 @@ import threading
 
 
 class Indexer:
-    def __init__(self):
+    def __init__(self, thread_id):
         super(Indexer, self).__init__()
         self._read_cnt = 1
         self._stemmer = Stemmer()
         self._tokenizer = Tokenizer()
         self._detector = StopWordsDetector()
-        self.db = MongoClient()['indexer_database']
+        self.db = MongoClient()['indexer_database{0}'.format(thread_id)]
 
 
 class InvertedIndexer(Indexer, threading.Thread):
     """the inverted indexer class"""
 
     def __init__(self, thread_id, threads_num):
-        super().__init__()
+        super().__init__(thread_id)
         self._read_cnt = thread_id + 1
         self._threads_num = threads_num
         self.inverted_collection = self.db['inverted_indexer']
@@ -28,12 +28,6 @@ class InvertedIndexer(Indexer, threading.Thread):
         try:
             page = c_db.Crawled.get(c_db.Crawled.id == self._read_cnt)
             self._read_cnt += self._threads_num
-
-            # to test performance
-            if self._read_cnt > 1000:
-                return -1
-            ###
-
             return page
         except c_db.Crawled.DoesNotExist:
             return -1
