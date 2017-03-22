@@ -1,15 +1,17 @@
 from Indexer.inverted_indexer import *
 import time
 
+threads_num = 8
+
 
 def test():
     threads = []
 
-    for i in range(4):
-        threads.append(InvertedIndexer(i, 4))
+    for i in range(threads_num):
+        threads.append(InvertedIndexer(i, threads_num))
         threads[i].start()  # This actually causes the thread to run
 
-    for i in range(4):
+    for i in range(threads_num):
         threads[i].join()
 
 
