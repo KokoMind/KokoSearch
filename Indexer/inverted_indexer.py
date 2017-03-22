@@ -30,8 +30,8 @@ class InvertedIndexer(Indexer, threading.Thread):
             self._read_cnt += self._threads_num
 
             # for performance testing
-            if self._read_cnt > 1000:
-                return -1
+            # if self._read_cnt > 1000:
+            #     return -1
             #####
 
             return page
