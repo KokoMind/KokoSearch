@@ -1,5 +1,4 @@
-from db_model import *
-from inverted_indexer import  Indexer
+from Indexer.inverted_indexer import  Indexer
 from gensim.models.ldamulticore import  LdaMulticore
 import gensim
 import operator
