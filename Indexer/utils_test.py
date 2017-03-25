@@ -16,10 +16,10 @@ print('')
 
 print(tokenizer.tokenize("hello, world!"))
 print(tokenizer.tokenize("hello my name is omar!"))
-print(tokenizer.tokenize("fuck you :v"))
+print(tokenizer.tokenize("love you :v"))
 
-sentences = ['my name is omar and fuck you',
-             'go fuck yourself please',
+sentences = ['my name is omar and love you',
+             'go love yourself please',
              'life is hard my friend']
 
 for s in sentences:
