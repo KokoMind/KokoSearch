@@ -1,5 +1,5 @@
-from lda_indexer import Lda_Indexer
+from Indexer.lda_indexer import Lda_Indexer
 
-
-
-indexer = Lda_Indexer('/home/gemy/work/MachineLearning/my-projects/KokoSearch/Indexer/data/results_wordids.txt','/home/gemy/work/MachineLearning/my-projects/KokoSearch/Indexer/data/results_tfidf.mm', train=True)
+path=""
+path2=""
+indexer = Lda_Indexer(path,path2, train=True)
