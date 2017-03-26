@@ -10,7 +10,7 @@ class Indexer:
         self._stemmer = Stemmer()
         self._tokenizer = Tokenizer()
         self._detector = StopWordsDetector()
-        self.db = MongoClient()['indexer_database__{0}'.format(thread_id)]
+        self.db = MongoClient()['indexer_database_{0}'.format(thread_id)]
         crawler_db = MongoClient()['crawled']
         self.crawled = crawler_db['crawled']
 
@@ -22,6 +22,7 @@ class InvertedIndexer(Indexer, threading.Thread):
         super().__init__(thread_id)
         self._read_cnt = thread_id * 1000
         self._threads_num = threads_num
+        self.db = MongoClient()['inverted_database_{0}'.format(thread_id)]
         self.inverted_collection = self.db['inverted_indexer']
 
     def _insert_record(self, word, url, pos, neighbours):
@@ -34,30 +35,35 @@ class InvertedIndexer(Indexer, threading.Thread):
     def index(self):
         """fill the inverted indexer database"""
 
-        for page in self.crawled.find({'my_id_1': {'$in': [x for x in range(self._read_cnt, self._read_cnt + 999)]}}):
-            self._read_cnt += 1000 * self._threads_num
+        batch = self.crawled.find({'my_id_1': {'$in': [x for x in range(self._read_cnt, self._read_cnt + 999)]}})
 
+        while batch.count() > 0:
+            self._read_cnt += 1000 * self._threads_num
             print(self._read_cnt)
 
-            # process over doc
-            page_text = page['content'].lower()
-            page_url = page['url']
+            for page in batch:
 
-            tokens = self._tokenizer.tokenize(page_text)
-            for i, token in enumerate(tokens):
-                if self._detector.is_stop_word(token):
-                    continue
+                # process over doc
+                page_text = page['content'].lower()
+                page_url = page['url']
 
-                stemmed = self._stemmer.stem(token)
+                tokens = self._tokenizer.tokenize(page_text)
+                for i, token in enumerate(tokens):
+                    if self._detector.is_stop_word(token):
+                        continue
 
-                if len(stemmed) < 3:
-                    continue
+                    stemmed = self._stemmer.stem(token)
 
-                neighbours = ''
-                for j in range(max(0, i - 5), min(len(tokens), i + 5)):
-                    neighbours += (tokens[j] + ' ')
+                    if len(stemmed) < 3:
+                        continue
 
-                self._insert_record(stemmed, page_url, i, neighbours)
+                    neighbours = ''
+                    for j in range(max(0, i - 5), min(len(tokens), i + 5)):
+                        neighbours += (tokens[j] + ' ')
+
+                    self._insert_record(stemmed, page_url, i, neighbours)
+
+            batch = self.crawled.find({'my_id_1': {'$in': [x for x in range(self._read_cnt, self._read_cnt + 999)]}})
 
     def run(self):
         self.index()
