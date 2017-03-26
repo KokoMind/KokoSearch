@@ -1,4 +1,4 @@
-from Indexer.inverted_indexer import *
+from inverted_indexer import *
 import time
 
 threads_num = 32

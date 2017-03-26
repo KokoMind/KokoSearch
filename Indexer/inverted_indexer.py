@@ -1,5 +1,4 @@
-from Indexer.utils import *
-import Crawler.db_model as c_db
+from utils import *
 from pymongo import MongoClient
 import threading
 

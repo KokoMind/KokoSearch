@@ -1,5 +1,4 @@
 import string
-import nltk
 
 
 class Stemmer:
