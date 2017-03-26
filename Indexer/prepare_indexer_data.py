@@ -13,4 +13,4 @@ def prepare():
             print(i)
 
 
-prepare()
+# prepare()
