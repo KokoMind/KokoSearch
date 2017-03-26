@@ -22,7 +22,7 @@ class InvertedIndexer(Indexer, threading.Thread):
         super().__init__(thread_id)
         self._read_cnt = thread_id * 1000
         self._threads_num = threads_num
-        self.db = MongoClient()['inverted_database_{0}'.format(thread_id)]
+        self.db = MongoClient()['inverted_database{0}'.format(thread_id)]
         self.inverted_collection = self.db['inverted_indexer']
 
     def _insert_record(self, word, url, pos, neighbours):
