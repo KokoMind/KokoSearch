@@ -62,6 +62,8 @@ class StopWordsDetector:
         return s
 
 
-def sentence_parser(page):
-    sents = nltk.sent_tokenize(page)
-    return sents
+# def sentence_parser(page):
+#     sents = nltk.sent_tokenize(page)
+#     return sents
+
+
