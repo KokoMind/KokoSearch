@@ -1,16 +1,17 @@
+import time
 from utils import *
 from pymongo import MongoClient
 import threading
 
 
 class Indexer:
-    def __init__(self, thread_id):
+    def __init__(self):
         super(Indexer, self).__init__()
         self._read_cnt = 1
         self._stemmer = Stemmer()
         self._tokenizer = Tokenizer()
         self._detector = StopWordsDetector()
-        self.db = MongoClient()['indexer_database_{0}'.format(thread_id)]
+        self.db = MongoClient()['indexer_database']
         crawler_db = MongoClient()['crawled']
         self.crawled = crawler_db['crawled']
 
@@ -19,10 +20,10 @@ class InvertedIndexer(Indexer, threading.Thread):
     """the inverted indexer class"""
 
     def __init__(self, thread_id, threads_num):
-        super().__init__(thread_id)
+        super().__init__()
         self._read_cnt = thread_id * 1000
         self._threads_num = threads_num
-        self.db = MongoClient()['inverted_database{0}'.format(thread_id)]
+        self.db = MongoClient()['inverted_database_final_{0}'.format(thread_id)]
         self.inverted_collection = self.db['inverted_indexer']
 
     def _insert_record(self, word, url, pos, neighbours):
@@ -38,6 +39,8 @@ class InvertedIndexer(Indexer, threading.Thread):
         batch = self.crawled.find({'my_id_1': {'$in': [x for x in range(self._read_cnt, self._read_cnt + 999)]}}, no_cursor_timeout=True)
 
         while batch.count() > 0:
+            start_time = time.time()
+
             self._read_cnt += 1000 * self._threads_num
             print(self._read_cnt)
 
@@ -65,6 +68,8 @@ class InvertedIndexer(Indexer, threading.Thread):
 
             batch.close()
             batch = self.crawled.find({'my_id_1': {'$in': [x for x in range(self._read_cnt, self._read_cnt + 999)]}}, no_cursor_timeout=True)
+
+            print("--- %s seconds ---" % (time.time() - start_time))
 
     def run(self):
         self.index()
