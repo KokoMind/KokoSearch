@@ -14,3 +14,9 @@ def prepare():
 
 
 # prepare()
+test = MongoClient()['test']
+
+r = test['test'].find({'my_id_1': {'$in': [0, 7, 5]}})
+
+for s in r:
+    print(s)

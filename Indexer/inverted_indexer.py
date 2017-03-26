@@ -35,7 +35,7 @@ class InvertedIndexer(Indexer, threading.Thread):
     def index(self):
         """fill the inverted indexer database"""
 
-        batch = self.crawled.find({'my_id_1': {'$in': [x for x in range(self._read_cnt, self._read_cnt + 999)]}})
+        batch = self.crawled.find({'my_id_1': {'$in': [x for x in range(self._read_cnt, self._read_cnt + 999)]}}, no_cursor_timeout=True)
 
         while batch.count() > 0:
             self._read_cnt += 1000 * self._threads_num
@@ -63,7 +63,8 @@ class InvertedIndexer(Indexer, threading.Thread):
 
                     self._insert_record(stemmed, page_url, i, neighbours)
 
-            batch = self.crawled.find({'my_id_1': {'$in': [x for x in range(self._read_cnt, self._read_cnt + 999)]}})
+            batch.close()
+            batch = self.crawled.find({'my_id_1': {'$in': [x for x in range(self._read_cnt, self._read_cnt + 999)]}}, no_cursor_timeout=True)
 
     def run(self):
         self.index()
