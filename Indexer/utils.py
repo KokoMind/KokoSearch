@@ -29,6 +29,7 @@ class Stemmer:
                     word = word[:len(word) - len(prefix)]
                     if len(word) > 1 and word[-1] == word[-2]:
                         word = word[:len(word) - 1]
+                    break
         return word
 
 
