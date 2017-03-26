@@ -11,7 +11,9 @@ class Indexer:
         self._stemmer = Stemmer()
         self._tokenizer = Tokenizer()
         self._detector = StopWordsDetector()
-        self.db = MongoClient()['indexer_database{0}'.format(thread_id)]
+        self.db = MongoClient()['indexer_database_{0}'.format(thread_id)]
+        crawler_db = MongoClient()['crawled']
+        self.crawled = crawler_db['crawled']
 
 
 class InvertedIndexer(Indexer, threading.Thread):
@@ -23,21 +25,6 @@ class InvertedIndexer(Indexer, threading.Thread):
         self._threads_num = threads_num
         self.inverted_collection = self.db['inverted_indexer']
 
-    def _get_next_page(self):
-        """get next page from the crawler database"""
-        try:
-            page = c_db.Crawled.get(c_db.Crawled.id == self._read_cnt)
-            self._read_cnt += self._threads_num
-
-            # for performance testing
-            # if self._read_cnt > 1000:
-            #     return -1
-            #####
-
-            return page
-        except c_db.Crawled.DoesNotExist:
-            return -1
-
     def _insert_record(self, word, url, pos, neighbours):
         record = {"word": word,
                   "url": url,
@@ -47,14 +34,13 @@ class InvertedIndexer(Indexer, threading.Thread):
 
     def index(self):
         """fill the inverted indexer database"""
-        page = self._get_next_page()
 
-        while page != -1:
+        for page in self.crawled.find():
             print(self._read_cnt)
 
             # process over doc
-            page_text = page.content.lower()
-            page_url = page.url
+            page_text = page['content'].lower()
+            page_url = page['url']
 
             tokens = self._tokenizer.tokenize(page_text)
             for i, token in enumerate(tokens):
@@ -71,8 +57,6 @@ class InvertedIndexer(Indexer, threading.Thread):
                     neighbours += (tokens[j] + ' ')
 
                 self._insert_record(stemmed, page_url, i, neighbours)
-
-            page = self._get_next_page()
 
     def run(self):
         self.index()
