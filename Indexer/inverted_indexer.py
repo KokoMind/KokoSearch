@@ -20,20 +20,9 @@ class InvertedIndexer(Indexer, threading.Thread):
 
     def __init__(self, thread_id, threads_num):
         super().__init__(thread_id)
-        self._read_cnt = thread_id + 1
+        self._read_cnt = thread_id * 1000
         self._threads_num = threads_num
         self.inverted_collection = self.db['inverted_indexer']
-
-    def _get_next_page(self):
-        """get next page from the crawler database"""
-        page = self.crawled.find({'my_id_1': self._read_cnt})
-
-        if page.count() > 0:
-            self._read_cnt += self._threads_num
-            return page[0]
-
-        else:
-            return -1
 
     def _insert_record(self, word, url, pos, neighbours):
         record = {"word": word,
@@ -44,9 +33,10 @@ class InvertedIndexer(Indexer, threading.Thread):
 
     def index(self):
         """fill the inverted indexer database"""
-        page = self._get_next_page()
 
-        while page != -1:
+        for page in self.crawled.find({'my_id_1': {'$in': [x for x in range(self._read_cnt, self._read_cnt + 999)]}}):
+            self._read_cnt += 1000 * self._threads_num
+
             print(self._read_cnt)
 
             # process over doc
@@ -68,8 +58,6 @@ class InvertedIndexer(Indexer, threading.Thread):
                     neighbours += (tokens[j] + ' ')
 
                 self._insert_record(stemmed, page_url, i, neighbours)
-
-            page = self._get_next_page()
 
     def run(self):
         self.index()
