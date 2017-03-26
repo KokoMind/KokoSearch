@@ -15,8 +15,8 @@ import time
 #         threads[i].join()
 
 def test():
-    threads_num = input('threads num: ')
-    thread_id = input('thread_id')
+    threads_num = int(input('threads num: '))
+    thread_id = int(input('thread_id: '))
 
     indexer = InvertedIndexer(thread_id, threads_num)
     indexer.index()
