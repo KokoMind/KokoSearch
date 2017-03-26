@@ -10,7 +10,7 @@ class Indexer:
         self._stemmer = Stemmer()
         self._tokenizer = Tokenizer()
         self._detector = StopWordsDetector()
-        self.db = MongoClient()['indexer_database_{0}'.format(thread_id)]
+        self.db = MongoClient()['indexer_database__{0}'.format(thread_id)]
         crawler_db = MongoClient()['crawled']
         self.crawled = crawler_db['crawled']
 
