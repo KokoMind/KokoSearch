@@ -1,7 +1,7 @@
 from Indexer.inverted_indexer import *
 import time
 
-threads_num = 8
+threads_num = 32
 
 
 def test():
