@@ -13,3 +13,5 @@ def prepare():
         crawled.update_one({'_id': s['_id']}, {'$inc': {'my_id_1': i}})
         if i % 10000 == 0:
             print(i)
+
+prepare()
