@@ -1,42 +1,30 @@
-from Indexer.utils import *
-import Crawler.db_model as c_db
+import time
+from utils import *
 from pymongo import MongoClient
 import threading
 
 
 class Indexer:
-    def __init__(self, thread_id):
+    def __init__(self):
         super(Indexer, self).__init__()
         self._read_cnt = 1
         self._stemmer = Stemmer()
         self._tokenizer = Tokenizer()
         self._detector = StopWordsDetector()
-        self.db = MongoClient()['indexer_database{0}'.format(thread_id)]
+        self.db = MongoClient()['indexer_database']
+        crawler_db = MongoClient()['crawled']
+        self.crawled = crawler_db['crawled']
 
 
 class InvertedIndexer(Indexer, threading.Thread):
     """the inverted indexer class"""
 
     def __init__(self, thread_id, threads_num):
-        super().__init__(thread_id)
-        self._read_cnt = thread_id + 1
+        super().__init__()
+        self._read_cnt = thread_id * 1000
         self._threads_num = threads_num
+        self.db = MongoClient()['inverted_database_final_{0}'.format(thread_id)]
         self.inverted_collection = self.db['inverted_indexer']
-
-    def _get_next_page(self):
-        """get next page from the crawler database"""
-        try:
-            page = c_db.Crawled.get(c_db.Crawled.id == self._read_cnt)
-            self._read_cnt += self._threads_num
-
-            # for performance testing
-            # if self._read_cnt > 1000:
-            #     return -1
-            #####
-
-            return page
-        except c_db.Crawled.DoesNotExist:
-            return -1
 
     def _insert_record(self, word, url, pos, neighbours):
         record = {"word": word,
@@ -47,32 +35,41 @@ class InvertedIndexer(Indexer, threading.Thread):
 
     def index(self):
         """fill the inverted indexer database"""
-        page = self._get_next_page()
 
-        while page != -1:
+        batch = self.crawled.find({'my_id_1': {'$in': [x for x in range(self._read_cnt, self._read_cnt + 999)]}}, no_cursor_timeout=True)
+
+        while batch.count() > 0:
+            start_time = time.time()
+
+            self._read_cnt += 1000 * self._threads_num
             print(self._read_cnt)
 
-            # process over doc
-            page_text = page.content.lower()
-            page_url = page.url
+            for page in batch:
 
-            tokens = self._tokenizer.tokenize(page_text)
-            for i, token in enumerate(tokens):
-                if self._detector.is_stop_word(token):
-                    continue
+                # process over doc
+                page_text = page['content'].lower()
+                page_url = page['url']
 
-                stemmed = self._stemmer.stem(token)
+                tokens = self._tokenizer.tokenize(page_text)
+                for i, token in enumerate(tokens):
+                    if self._detector.is_stop_word(token):
+                        continue
 
-                if len(stemmed) < 3:
-                    continue
+                    stemmed = self._stemmer.stem(token)
 
-                neighbours = ''
-                for j in range(max(0, i - 5), min(len(tokens), i + 5)):
-                    neighbours += (tokens[j] + ' ')
+                    if len(stemmed) < 3:
+                        continue
 
-                self._insert_record(stemmed, page_url, i, neighbours)
+                    neighbours = ''
+                    for j in range(max(0, i - 5), min(len(tokens), i + 5)):
+                        neighbours += (tokens[j] + ' ')
 
-            page = self._get_next_page()
+                    self._insert_record(stemmed, page_url, i, neighbours)
+
+            batch.close()
+            batch = self.crawled.find({'my_id_1': {'$in': [x for x in range(self._read_cnt, self._read_cnt + 999)]}}, no_cursor_timeout=True)
+
+            print("--- %s seconds ---" % (time.time() - start_time))
 
     def run(self):
         self.index()
