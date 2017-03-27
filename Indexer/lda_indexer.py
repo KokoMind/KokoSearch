@@ -4,6 +4,7 @@ import gensim
 import operator
 import Crawler.db_model as c_db
 import threading
+import logging
 class Lda_Indexer(Indexer):
     def __init__(self,_id2word_file,corpus_file,num_topics=500,load=None,train=False):
         super().__init__()
@@ -19,6 +20,8 @@ class Lda_Indexer(Indexer):
             self._train_model()
         self.lda_collection = self.db['lda_indexer']
 
+
+    logging.basicConfig(filename='lda_model.log', format='%(asctime)s : %(levelname)s : %(message)s', level=logging.INFO)
 
     def _get_next_page(self,id):
         """get next page from the crawler database"""
