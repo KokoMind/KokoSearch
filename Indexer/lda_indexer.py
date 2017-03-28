@@ -44,7 +44,7 @@ class Lda_Indexer(Indexer):
         new_doc=self._id2word.doc2bow(doc)
         sorted_probs=sorted(self._lda[new_doc],key=lambda x: x[1])
         print (sorted_probs)
-        top_topics, _ = [list(c) for c in zip(*sorted_probs[:5])]
+        top_topics=[key for _ , key in sorted_probs]
         top_topics+=[-1]*5
         return top_topics[:5]
 
@@ -55,7 +55,6 @@ class Lda_Indexer(Indexer):
         if len(self._to_be_inserted) > 1000:
             self.lda_collection.insert_many(self._to_be_inserted)
             self._to_be_inserted = []
-
 
 
 
