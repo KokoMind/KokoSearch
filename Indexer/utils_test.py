@@ -1,5 +1,6 @@
 from Indexer.utils import *
-from gensim import corpora, models
+
+# from gensim import corpora, models
 
 stemmer = Stemmer()
 tokenizer = Tokenizer()
