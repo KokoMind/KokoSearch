@@ -23,15 +23,20 @@ class InvertedIndexer(Indexer, threading.Thread):
         super().__init__()
         self._read_cnt = thread_id * 1000
         self._threads_num = threads_num
-        self.db = MongoClient()['inverted_database_final_{0}'.format(thread_id)]
-        self.inverted_collection = self.db['inverted_indexer']
+        db = MongoClient()['inverted_database_final_{0}'.format(thread_id)]
+        self.inverted_collection = db['inverted_indexer']
+        self._to_be_inserted = []
 
     def _insert_record(self, word, url, pos, neighbours):
         record = {"word": word,
                   "url": url,
                   "pos": pos,
                   "neighbours": neighbours}
-        self.inverted_collection.insert_one(record)
+        self._to_be_inserted.append(record)
+
+        if len(self._to_be_inserted) > 2500:
+            self.inverted_collection.insert_many(self._to_be_inserted)
+            self._to_be_inserted = []
 
     def index(self):
         """fill the inverted indexer database"""
