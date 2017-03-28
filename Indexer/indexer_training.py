@@ -2,6 +2,11 @@ from lda_indexer import Lda_Indexer
 
 
 
-path="/mnt/results/results_wordids.txt.bz2"
-path2="/mnt/results/results_tfidf.mm"
-indexer = Lda_Indexer(path,path2, train=True)
+dic="/mnt/results/results_wordids.txt.bz2"
+corpus="/mnt/results/results_tfidf.mm"
+model="/mnt/lda/lda.model"
+
+threads_num = int(input('threads num: '))
+thread_id = int(input('thread_id: '))
+indexer = Lda_Indexer(dic,corpus, load=model,threads_num=threads_num,thread_id=thread_id)
+indexer.index()
