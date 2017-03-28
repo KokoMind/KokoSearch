@@ -20,11 +20,6 @@ class Lda_Indexer(Indexer):
         self._to_be_inserted = []
         self.db = MongoClient()['lda_database_final_{0}'.format(thread_id)]
         self.lda_collection = self.db['lda_indexer']
-
-
-
-
-        logging.basicConfig(format='%(asctime)s : %(levelname)s : %(message)s', level=logging.INFO)
         if load != None:
             self._load_model(load)
         if train:
@@ -48,6 +43,7 @@ class Lda_Indexer(Indexer):
         doc=doc.split()
         new_doc=self._id2word.doc2bow(doc)
         sorted_probs=sorted(self._lda[new_doc],key=lambda x: x[1])
+        print (sorted_probs)
         top_topics, _ = [list(c) for c in zip(*sorted_probs[:5])]
         top_topics+=[-1]*5
         return top_topics[:5]
