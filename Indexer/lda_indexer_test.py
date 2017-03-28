@@ -1,9 +1,9 @@
-from Indexer.utils import *
+from utils import *
 from gensim import corpora, models
 from gensim.models.ldamulticore import  LdaMulticore
 import operator
-path=""
-path2=""
+path="/mnt/results/results_wordids.txt.bz2"
+path2="/mnt/results/results_tfidf.mm"
 id2word = corpora.Dictionary.load_from_text(path)
 lda=models.LdaModel.load(path2)
 new_doc=id2word.doc2bow("i'm playing football")
