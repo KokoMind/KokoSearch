@@ -19,9 +19,9 @@ class Indexer:
 class InvertedIndexer(Indexer, threading.Thread):
     """the inverted indexer class"""
 
-    def __init__(self, thread_id, threads_num):
+    def __init__(self, thread_id, threads_num, start_from):
         super().__init__()
-        self._read_cnt = thread_id * 1000
+        self._read_cnt = start_from + thread_id * 1000
         self._threads_num = threads_num
         db = MongoClient()['inverted_database_final_{0}'.format(thread_id)]
         self.inverted_collection = db['inverted_indexer']

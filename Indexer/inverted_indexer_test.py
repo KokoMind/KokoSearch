@@ -17,8 +17,8 @@ import time
 def test():
     threads_num = int(input('threads num: '))
     thread_id = int(input('thread_id: '))
-
-    indexer = InvertedIndexer(thread_id, threads_num)
+    start_from = int(input('start from: '))
+    indexer = InvertedIndexer(thread_id, threads_num, start_from)
     indexer.index()
 
 test()
