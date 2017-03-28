@@ -1,8 +1,7 @@
-from Indexer.inverted_indexer import  Indexer
+from inverted_indexer import  Indexer
 from gensim.models.ldamulticore import  LdaMulticore
 import gensim
 import operator
-import Crawler.db_model as c_db
 import threading
 import logging
 class Lda_Indexer(Indexer):
@@ -14,6 +13,7 @@ class Lda_Indexer(Indexer):
         self._construct_corpus()
         self._cnt=[]
         self.threads_num=4
+        logging.basicConfig(format='%(asctime)s : %(levelname)s : %(message)s', level=logging.INFO)
         if load != None:
             self._load_model()
         if train:
@@ -21,7 +21,6 @@ class Lda_Indexer(Indexer):
         self.lda_collection = self.db['lda_indexer']
 
 
-    logging.basicConfig(filename='lda_model.log', format='%(asctime)s : %(levelname)s : %(message)s', level=logging.INFO)
 
     def _get_next_page(self,id):
         """get next page from the crawler database"""
