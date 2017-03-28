@@ -18,7 +18,7 @@ class Lda_Indexer(Indexer):
         self.threads_num=threads_num
         self._read_cnt =  thread_id * 1000
         self._to_be_inserted = []
-        db = MongoClient()['lda_database_final_{0}'.format(thread_id)]
+        self.db = MongoClient()['lda_database_final_{0}'.format(thread_id)]
         self.lda_collection = self.db['lda_indexer']
 
 
