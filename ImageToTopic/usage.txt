@@ -1,0 +1,12 @@
+--Make sure you installed lua and torch as stated in neuraltalk2 github repo
+
+--Run the following command
+th eval.lua -model ./model_id1-501-1448236541.t7 -image_folder ./imgs/ -num_images 1 
+
+Note that: you can use multiple images from the same folder.
+
+The output can be read from vis/vis.json based on the image id.
+
+No need to resize the image.
+
+Recommended: Use 1 image instead of multiple ones
