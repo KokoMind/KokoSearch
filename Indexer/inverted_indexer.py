@@ -3,7 +3,6 @@ from utils import *
 from query_processor import *
 from pymongo import MongoClient
 import threading
-import operator
 
 
 class Indexer:
@@ -81,28 +80,4 @@ class InvertedIndexer(Indexer, threading.Thread):
     def run(self):
         self.index()
 
-    def search(self, query):
-        query_processor = QueryProcessor()
-        results_num = 50
 
-        if query_processor.is_qoute(query):
-            results = self.inverted_collection.find({'$text': {'$search': query}})
-            urls = []
-            for i, record in enumerate(results):
-                urls.append(record['url'])
-                if i == results_num:
-                    break
-
-        else:
-            tokens = query_processor.process(query)
-            score = {}
-            for token in tokens:
-                batch = self.inverted_collection.find({'word': token})
-                for record in batch:
-                    score[record['url']] += 1
-
-            results = sorted(score.items(), key=operator.itemgetter(1))
-
-            urls = [url for url, value in results.items()][:results_num]
-
-        return urls
