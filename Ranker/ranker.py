@@ -15,3 +15,5 @@ class Ranker():
     def _load_model(self):
         self._lda = gensim.models.LdaModel.load(self.model_path)
 
+    def search(self):
+        pass
