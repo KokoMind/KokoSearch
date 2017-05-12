@@ -52,6 +52,7 @@ class Lda_Indexer(Indexer):
         if len(self._to_be_inserted) > 1000:
             self.lda_collection.insert_many(self._to_be_inserted)
             self._to_be_inserted = []
+            print("added to db")
 
     def index(self):
         batch = self.crawled.find({'my_id_1': {'$in': [x for x in range(self._read_cnt, self._read_cnt + 999)]}}, no_cursor_timeout=True)
