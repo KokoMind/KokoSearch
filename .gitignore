@@ -1,5 +1,6 @@
 # Byte-compiled / optimized / DLL files
 __pycache__/
+*.py[cod]
 *$py.class
 
 # C extensions
@@ -87,37 +88,11 @@ ENV/
 # Rope project settings
 .ropeproject
 
-####DJANGO
-*.egg-info
-MANIFEST
-docs/locale/
-node_modules/
-tests/coverage_html/
-tests/.coverage
-tests/report/
-
+.idea/*
 Indexer/Indexer_cache.db
 Crawler/Crawler_cache.db
 
-
+*.db
 trained_*
 
-*.class
-
-# Mobile Tools for Java (J2ME)
-.mtj.tmp/
-
-# Package Files #
-!*.jar
-*.war
-*.ear
-
-# virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
-hs_err_pid*
-
-.idea/
-*.db
-out/
-!db_template/*
-!crawled.db
-kokoCrawler/src/classes/
+*.jar
