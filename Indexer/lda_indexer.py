@@ -54,7 +54,7 @@ class Lda_Indexer(Indexer):
 
     def index(self):
         batch = self.crawled.find({'my_id_1': {'$in': [x for x in range(self._read_cnt, self._read_cnt + 999)]}}, no_cursor_timeout=True)
-
+        print(batch.count())
         while batch.count() > 0:
             start_time = time.time()
             print("-----")
