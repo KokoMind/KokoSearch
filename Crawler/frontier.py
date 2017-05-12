@@ -3,6 +3,7 @@ from storage import Storage
 from queue import Queue
 import time
 
+
 class Frontier:
     """Class which will contain ToCrawl pages"""
 
