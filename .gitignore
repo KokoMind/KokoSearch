@@ -1,6 +1,5 @@
 # Byte-compiled / optimized / DLL files
 __pycache__/
-*.py[cod]
 *$py.class
 
 # C extensions
@@ -88,11 +87,19 @@ ENV/
 # Rope project settings
 .ropeproject
 
-.idea/*
+####DJANGO
+*.egg-info
+MANIFEST
+docs/locale/
+node_modules/
+tests/coverage_html/
+tests/.coverage
+tests/report/
+
 Indexer/Indexer_cache.db
 Crawler/Crawler_cache.db
 
-*.db
+
 trained_*
 
 *.class
@@ -113,3 +120,4 @@ hs_err_pid*
 out/
 !db_template/*
 !crawled.db
+kokoCrawler/src/classes/
