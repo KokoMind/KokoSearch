@@ -16,4 +16,5 @@ class Ranker():
         self._lda = gensim.models.LdaModel.load(self.model_path)
 
     def search(self):
+        # inverted_indexer_result=            #call your function here
         pass
