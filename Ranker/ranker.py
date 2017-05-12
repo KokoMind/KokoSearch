@@ -1,8 +1,7 @@
-import gensim
-from query_processor import *
+import  gensim
+from query_processor import QueryProcessor
 from pymongo import MongoClient
 import operator
-
 
 class Ranker:
     def __init__(self, _id2word_path, corpus_path, model_path):
@@ -14,9 +13,15 @@ class Ranker:
         self.query_processor = QueryProcessor()
         self.inverted_indexer_results_num = 50
         self.inverted_collections = []
+        self.lda_collections=[]
         for i in range(16):
             db = MongoClient()['inverted_database_final_{0}'.format(i)]
             self.inverted_collections.append(db['inverted_indexer'])
+
+        for i in range(4):
+            db = MongoClient()['lda_database_final_{0}'.format(i)]
+            self.lda_collections.append(db['lda_indexer'])
+
 
     def _construct_corpus(self):
         self._id2word = gensim.corpora.Dictionary.load_from_text(self._id2word_path)
@@ -52,3 +57,22 @@ class Ranker:
                 urls += [url for url, value in results.items()][:self.inverted_indexer_results_num / 16]
 
         return urls, snapits
+    def search(self,query):
+        query_topic=self.query_processor.get_topic(query)
+        inverted_indexer_urls,snippets=self.inverted_indexer_search(query)
+        same_topic={}
+        for url in inverted_indexer_urls:
+            same_topic[url]=False
+        for i in range(4):
+            batch = self.lda_collections[i].find({"c1":query_topic,'url': {'$in': inverted_indexer_urls}}, no_cursor_timeout=True)
+            for record in batch:
+                same_topic[record['url']]=True
+        lis1=[]
+        lis2=[]
+        for url in inverted_indexer_urls:
+            if same_topic[url]:
+                lis1.append(url)
+            else :
+                lis2.append(url)
+
+        return lis1+lis2,snippets

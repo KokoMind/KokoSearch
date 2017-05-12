@@ -2,7 +2,6 @@ from inverted_indexer import Indexer
 from gensim.models.ldamulticore import LdaMulticore
 import gensim
 import time
-
 from pymongo import MongoClient
 
 
