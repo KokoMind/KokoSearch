@@ -69,6 +69,8 @@ class Lda_Indexer(Indexer):
                 self._add_document(page_url,top_topics[0],top_topics[1],top_topics[2],top_topics[3],top_topics[4])
 
             batch.close()
+            self._read_cnt += 1000 * self.threads_num
+
             batch = self.crawled.find({'my_id_1': {'$in': [x for x in range(self._read_cnt, self._read_cnt + 999)]}}, no_cursor_timeout=True)
 
             print("--- %s seconds ---" % (time.time() - start_time))
