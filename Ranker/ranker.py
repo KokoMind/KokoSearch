@@ -5,12 +5,7 @@ import operator
 
 class Ranker:
     def __init__(self, _id2word_path, corpus_path, model_path):
-        self._id2word_path = _id2word_path
-        self._corpus_path = corpus_path
-        self._construct_corpus()
-        self.model_path = model_path
-        self._load_model()
-        self.query_processor = QueryProcessor()
+        self.query_processor = QueryProcessor(_id2word_path, corpus_path, model_path)
         self.inverted_indexer_results_num = 50
         self.inverted_collections = []
         self.lda_collections=[]
@@ -23,12 +18,6 @@ class Ranker:
             self.lda_collections.append(db['lda_indexer'])
 
 
-    def _construct_corpus(self):
-        self._id2word = gensim.corpora.Dictionary.load_from_text(self._id2word_path)
-        self._corpus = gensim.corpora.MmCorpus(self._corpus_path)
-
-    def _load_model(self):
-        self._lda = gensim.models.LdaModel.load(self.model_path)
 
     def inverted_indexer_search(self, query):
         urls = []
