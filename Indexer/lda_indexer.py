@@ -22,7 +22,8 @@ class Lda_Indexer(Indexer):
             self._load_model(load)
         if train:
             self._train_model()
-
+        crawler_db = MongoClient()['crawled']
+        self.crawled = crawler_db['crawled']
     def _construct_corpus(self):
         self._id2word = gensim.corpora.Dictionary.load_from_text(self._id2word_file)
         self._corpus = gensim.corpora.MmCorpus(self._corpus_file)
@@ -54,10 +55,10 @@ class Lda_Indexer(Indexer):
 
     def index(self):
         batch = self.crawled.find({'my_id_1': {'$in': [x for x in range(self._read_cnt, self._read_cnt + 999)]}}, no_cursor_timeout=True)
-
+        print(batch.count())
         while batch.count() > 0:
             start_time = time.time()
-
+            print("-----")
             self._read_cnt += 1000 * self.threads_num
             print(self._read_cnt)
 
