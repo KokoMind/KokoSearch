@@ -22,7 +22,8 @@ class Lda_Indexer(Indexer):
             self._load_model(load)
         if train:
             self._train_model()
-
+        crawler_db = MongoClient()['crawled']
+        self.crawled = crawler_db['crawled']
     def _construct_corpus(self):
         self._id2word = gensim.corpora.Dictionary.load_from_text(self._id2word_file)
         self._corpus = gensim.corpora.MmCorpus(self._corpus_file)
