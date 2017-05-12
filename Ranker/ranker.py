@@ -27,12 +27,14 @@ class Ranker:
 
     def inverted_indexer_search(self, query):
         urls = []
+        snapits = {}
 
         for i in range(16):
             if self.query_processor.is_qoute(query):
                 results = self.inverted_collections[i].find({'$text': {'$search': query}})
                 for j, record in enumerate(results):
                     urls.append(record['url'])
+                    snapits[record['url']] = record['neighbours']
                     if j == self.inverted_indexer_results_num / 16:
                         break
 
@@ -43,9 +45,10 @@ class Ranker:
                     batch = self.inverted_collections[i].find({'word': token})
                     for record in batch:
                         score[record['url']] += 1
+                        snapits[record['url']] += record['neighbours']
 
                 results = sorted(score.items(), key=operator.itemgetter(1))
 
                 urls += [url for url, value in results.items()][:self.inverted_indexer_results_num / 16]
 
-        return urls
+        return urls, snapits
