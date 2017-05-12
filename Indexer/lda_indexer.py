@@ -57,7 +57,7 @@ class Lda_Indexer(Indexer):
 
         while batch.count() > 0:
             start_time = time.time()
-
+            print("-----")
             self._read_cnt += 1000 * self.threads_num
             print(self._read_cnt)
 
