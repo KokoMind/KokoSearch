@@ -5,7 +5,7 @@ th eval.lua -model ./model_id1-501-1448236541.t7 -image_folder ./imgs/ -num_imag
 
 Note that: you can use multiple images from the same folder.
 
-The output can be read from vis.json based on the image id.
+The output can be read from vis/vis.json based on the image id.
 
 No need to resize the image.
 
