@@ -2,9 +2,9 @@ from lda_indexer import Lda_Indexer
 
 
 
-dic="/mnt/results/results_wordids.txt.bz2"
-corpus="/mnt/results/results_tfidf.mm"
-model="/mnt/lda/lda.model"
+dic="./results/results_wordids.txt.bz2"
+corpus="./results/results_tfidf.mm"
+model="./lda_model/lda.model"
 
 threads_num = int(input('threads num: '))
 thread_id = int(input('thread_id: '))
