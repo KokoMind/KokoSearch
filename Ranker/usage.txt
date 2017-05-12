@@ -1,0 +1,10 @@
+#download result folder from your drive
+#download model folder
+create a ranker instace , it took 3 params :
+1-_id2word_path=result_folder_path + "/results_wordids.txt.bz2"
+2-corpus_path=.result_folder_path +"/results_tfidf.mm"
+3-model_path=model_folder_path+"/lda.model"
+
+
+#then you can call ranker.search(query)
+it will return a list of sorted urls , and dictionaary of snippet .
