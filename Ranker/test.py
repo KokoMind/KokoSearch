@@ -1,4 +1,4 @@
-from ranker import Ranker
+from Ranker.ranker import Ranker
 
 id2word_file = "./results/results_wordids.txt.bz2"
 corpus = "./results/results_tfidf.mm"
