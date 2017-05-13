@@ -52,7 +52,7 @@ class Ranker:
         print('\nbegin sort')
         results = sorted(score.items(), key=operator.itemgetter(1), reverse=True)
         print('finished sort')
-        urls = [(url, snapits[url][:350]) for (url, value) in results][:int(self.inverted_indexer_results_num)]
+        urls = [(url, snapits[url][:1]) for (url, value) in results][:int(self.inverted_indexer_results_num)]
 
         return urls
 
