@@ -47,6 +47,7 @@ class Ranker:
         return urls, snapits
 
     def search(self, query):
+        print("start")
         query_topic = self.query_processor.get_topic(query)
         inverted_indexer_urls, snippets = self.inverted_indexer_search(query)
         same_topic = {}
