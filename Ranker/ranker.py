@@ -34,18 +34,25 @@ class Ranker:
             tokens = self.query_processor.process(clean_query)
 
             for token in tokens:
+                showed = []
                 print("\ntoken ", token)
                 batch = self.inverted_collections[i].find({'word': token}, no_cursor_timeout=True).limit(4000)
                 for record in batch:
                     print('.', end="")
                     if not self.query_processor.is_qoute(query) or self.query_processor.is_qoute(query) and clean_query in record['neighbours']:
                         if record['url'] in score:
-                            score[record['url']] += 1
+                            if record['url'] in showed:
+                                score[record['url']] += 1
+                            else:
+                                score[record['url']] += 100
+                                showed.append(record['url'])
+
                             snapits[record['url']] += ', ' + record['neighbours']
                         else:
                             if record['url'].split('/')[2] not in hosts:
                                 hosts.append(record['url'].split('/')[2])
-                                score[record['url']] = 1
+                                showed.append(record['url'])
+                                score[record['url']] = 100
                                 snapits[record['url']] = record['neighbours']
                 batch.close()
 
