@@ -49,14 +49,37 @@ def process_image(request):
 
         uploaded_file_url = fs.url(filename)
 
-        # cmd = ['gedit']
-        # subprocess.Popen(cmd).wait()
+        print('starting image captioning')
+
+        cmd = ['th', '~/KokoSearch/neuraltalk2-master/eval.lua', '-model', 'model_id1-501-1448236541.t7_cpu.t7', '-image_folder', '~/KokoSearch/imgs', '-num_images', '10', '-gpuid', '-1']
+        subprocess.Popen(cmd).wait()
+
+        print('finished image captioning')
 
         fs.delete(filename)
 
         with open('ImageToTopic/vis/vis.json') as data_file:
             data = json.load(data_file)
 
-        return HttpResponse("Search by image\n" + str(uploaded_file_url) + "\n" + str(data[0]['caption']))
+        query = str(data[0]['caption'])
+        start = time.time()
+        print('query:')
+        print(query)
+        print('searching with image')
+        id2word_file = "Ranker/results/results_wordids.txt.bz2"
+        corpus = "Ranker/results/results_tfidf.mm"
+        model = "Ranker/lda_model/lda.model"
+        rank = Ranker(_id2word_path=id2word_file, corpus_path=corpus, model_path=model)
+        obj = rank.search(query)
+        num_res = len(obj)
+        req_time = (time.time() - start)
+        print('search finished with image')
+        return render(request, 'search_results.html',
+                      {
+                          'num_res': num_res,
+                          'req_time': req_time,
+                          'query': query,
+                          'links': obj
+                      })
 
     return redirect(index)
