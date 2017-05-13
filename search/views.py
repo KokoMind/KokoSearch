@@ -51,7 +51,7 @@ def process_image(request):
 
         print('starting image captioning')
 
-        cmd = ['th ~/KokoSearch/kneuraltalk2-master/eval.lua -model model_id1-501-1448236541.t7_cpu.t7 -image_folder ~/KokoSearch/imgs -num_images 10 -gpuid -1']
+        cmd = ['th', '~/KokoSearch/kneuraltalk2-master/eval.lua', '-model', 'model_id1-501-1448236541.t7_cpu.t7', '-image_folder', '~/KokoSearch/imgs', '-num_images', '10', '-gpuid', '-1']
         subprocess.Popen(cmd).wait()
 
         print('finished image captioning')
