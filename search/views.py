@@ -27,7 +27,13 @@ def process_query(request):
         num_res = len(obj)
         req_time = (start - time.time()) / 1000
         print('search finished')
-        return redirect(results, obj=obj, num_res=num_res, req_time=req_time, query=request.POST['query'])
+        return render(request, 'search_results.html',
+                      {
+                          'num_res': num_res,
+                          'req_time': req_time,
+                          'query': request.POST['query'],
+                          'links': obj
+                      })
     return redirect(index)
 
 
@@ -54,13 +60,3 @@ def process_image(request):
         return HttpResponse("Search by image\n" + str(uploaded_file_url) + "\n" + str(data[0]['caption']))
 
     return redirect(index)
-
-
-def results(request, **kwargs):
-    return render(request, 'search_results.html',
-                  {
-                      'num_res': kwargs['num_res'],
-                      'req_time': kwargs['req_time'],
-                      'query': kwargs['query'],
-                      'links': kwargs['obj']
-                  })
