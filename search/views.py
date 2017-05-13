@@ -3,7 +3,7 @@ from django.http import HttpResponse
 from django.core.files.storage import FileSystemStorage
 import subprocess
 from search.utils import valid_image_mimetype
-
+import json
 
 # from scipy import misc
 
@@ -41,7 +41,10 @@ def process_image(request):
 
         fs.delete(filename)
 
-        return HttpResponse("Search by image\n" + str(uploaded_file_url))
+        with open('ImageToTopic/vis/vis.json') as data_file:
+            data = json.load(data_file)
+
+        return HttpResponse("Search by image\n" + str(uploaded_file_url) + "\n" + str(data[0]['caption']))
 
     return redirect(index)
 
