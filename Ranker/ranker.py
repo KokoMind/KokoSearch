@@ -22,30 +22,44 @@ class Ranker:
         urls = []
         snapits = {}
         score = {}
+        hosts = []
 
-        for i in range(16):
+        for i in range(1):
+            print("\nFML", i)
             if self.query_processor.is_qoute(query):
-                clean_query = query[1:-2]
+                clean_query = query[1:-1]
             else:
                 clean_query = query
 
             tokens = self.query_processor.process(clean_query)
 
             for token in tokens:
-                batch = self.inverted_collections[i].find({'word': token}, no_cursor_timeout=True).limit(700)
+                showed = []
+                print("\ntoken ", token)
+                batch = self.inverted_collections[i].find({'word': token}, no_cursor_timeout=True).limit(4000)
                 for record in batch:
+                    print('.', end="")
                     if not self.query_processor.is_qoute(query) or self.query_processor.is_qoute(query) and clean_query in record['neighbours']:
                         if record['url'] in score:
-                            score[record['url']] += 1
+                            if record['url'] in showed:
+                                score[record['url']] += 1
+                            else:
+                                score[record['url']] += 100
+                                showed.append(record['url'])
+
                             snapits[record['url']] += ', ' + record['neighbours']
                         else:
-                            score[record['url']] = 1
-                            snapits[record['url']] = record['neighbours']
+                            if record['url'].split('/')[2] not in hosts:
+                                hosts.append(record['url'].split('/')[2])
+                                showed.append(record['url'])
+                                score[record['url']] = 100
+                                snapits[record['url']] = record['neighbours']
                 batch.close()
 
+        print('\nbegin sort')
         results = sorted(score.items(), key=operator.itemgetter(1), reverse=True)
-
-        urls = [(url, snapits[url][:350]) for (url, value) in results][:int(self.inverted_indexer_results_num / 16)]
+        print('finished sort')
+        urls = [(url, snapits[url][:350]) for (url, value) in results][:int(self.inverted_indexer_results_num)]
 
         return urls
 
@@ -71,4 +85,4 @@ class Ranker:
             else:
                 lis2.append((url, snippet))
 
-        return lis1 + lis2
+        return inverted_indexer_urls
