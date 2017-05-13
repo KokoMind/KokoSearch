@@ -5,10 +5,10 @@ class Stemmer:
     _prefixes = ['ing', 'es', 's', 'ed', 'er']
 
     def __init__(self):
-        with open('./data/vocs.txt') as f:
+        with open('Ranker/data/vocs.txt') as f:
             vocs = f.readlines()
 
-        with open('./data/stemmed.txt') as f:
+        with open('Ranker/data/stemmed.txt') as f:
             stemmed = f.readlines()
 
         stem_vocs = [x.strip() for x in vocs]
@@ -44,7 +44,7 @@ class StopWordsDetector:
     """class for detecting the important words"""
 
     def __init__(self):
-        with open('./data/stop_words.txt') as f:
+        with open('Ranker/data/stop_words.txt') as f:
             content = f.readlines()
 
         self._stop_words = [x.strip() for x in content]
