@@ -43,10 +43,9 @@ class Ranker:
                             snapits[record['url']] = record['neighbours']
                 batch.close()
 
-        if not self.query_processor.is_qoute(query):
-            results = sorted(score.items(), key=operator.itemgetter(1), reverse=True)
+        results = sorted(score.items(), key=operator.itemgetter(1), reverse=True)
 
-            urls = [(url, snapits[url][:350]) for (url, value) in results][:int(self.inverted_indexer_results_num / 16)]
+        urls = [(url, snapits[url][:350]) for (url, value) in results][:int(self.inverted_indexer_results_num / 16)]
 
         return urls
 
