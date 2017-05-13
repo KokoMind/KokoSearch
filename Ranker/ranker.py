@@ -22,6 +22,7 @@ class Ranker:
         urls = []
         snapits = {}
         score = {}
+        hosts = []
 
         for i in range(6):
             print("\nFML", i)
@@ -42,8 +43,10 @@ class Ranker:
                             score[record['url']] += 1
                             snapits[record['url']] += ', ' + record['neighbours']
                         else:
-                            score[record['url']] = 1
-                            snapits[record['url']] = record['neighbours']
+                            if record['url'].split('/')[2] not in hosts:
+                                hosts.append(record['url'].split('/')[2])
+                                score[record['url']] = 1
+                                snapits[record['url']] = record['neighbours']
                 batch.close()
 
         print('\nbegin sort')
