@@ -63,6 +63,8 @@ def process_image(request):
 
         query = str(data[0]['caption'])
         start = time.time()
+        print('query:')
+        print(query)
         print('searching with image')
         id2word_file = "Ranker/results/results_wordids.txt.bz2"
         corpus = "Ranker/results/results_tfidf.mm"
