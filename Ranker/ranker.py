@@ -46,7 +46,7 @@ class Ranker:
 
                 results = sorted(score.items(), key=operator.itemgetter(1))
 
-                urls += [url for url, value in results.items()][:self.inverted_indexer_results_num / 16]
+                urls += [url for (url, value) in results][:self.inverted_indexer_results_num / 16]
 
         return urls, snapits
 
