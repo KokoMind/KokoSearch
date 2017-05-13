@@ -24,7 +24,7 @@ class Ranker:
         score = {}
         hosts = []
 
-        for i in range(8):
+        for i in range(4):
             print("\nFML", i)
             if self.query_processor.is_qoute(query):
                 clean_query = query[1:-1]
@@ -35,7 +35,7 @@ class Ranker:
 
             for token in tokens:
                 print("\ntoken ", token)
-                batch = self.inverted_collections[i].find({'word': token}, no_cursor_timeout=True).limit(1000)
+                batch = self.inverted_collections[i].find({'word': token}, no_cursor_timeout=True).limit(2000)
                 for record in batch:
                     print('.', end="")
                     if not self.query_processor.is_qoute(query) or self.query_processor.is_qoute(query) and clean_query in record['neighbours']:
