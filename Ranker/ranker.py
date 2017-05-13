@@ -37,8 +37,12 @@ class Ranker:
                 for token in tokens:
                     batch = self.inverted_collections[i].find({'word': token})
                     for record in batch:
-                        score[record['url']] += 1
-                        snapits[record['url']] += ' - ' + record['neighbours']
+                        if record['url'] in score:
+                            score[record['url']] += 1
+                            snapits[record['url']] += ' - ' + record['neighbours']
+                        else:
+                            score[record['url']] = 1
+                            snapits[record['url']] = record['neighbours']
 
                 results = sorted(score.items(), key=operator.itemgetter(1))
 
