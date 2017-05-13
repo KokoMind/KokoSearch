@@ -25,7 +25,7 @@ class Ranker:
 
         for i in range(16):
             if self.query_processor.is_qoute(query):
-                db_results = self.inverted_collections[i].find({'$text': {'$search': query}}).limit(1000)
+                db_results = self.inverted_collections[i].find({'$text': {'$search': query}}).limit(100)
                 for j, record in enumerate(db_results):
                     urls.append(record['url'])
                     snapits[record['url']] = record['neighbours']
@@ -36,7 +36,7 @@ class Ranker:
                 tokens = self.query_processor.process(query)
 
                 for token in tokens:
-                    batch = self.inverted_collections[i].find({'word': token}).limit(1000)
+                    batch = self.inverted_collections[i].find({'word': token}).limit(300)
                     for record in batch:
                         if record['url'] in score:
                             score[record['url']] += 1
