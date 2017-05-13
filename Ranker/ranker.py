@@ -25,26 +25,23 @@ class Ranker:
 
         for i in range(16):
             if self.query_processor.is_qoute(query):
-                db_results = self.inverted_collections[i].find({'$text': {'$search': query}}, no_cursor_timeout=True)
-                for j, record in enumerate(db_results):
-                    urls.append((record['url'], record['neighbours']))
-                    if j == self.inverted_indexer_results_num / 16:
-                        break
-                db_results.close()
-
+                clean_query = query[1:-2]
             else:
-                tokens = self.query_processor.process(query)
+                clean_query = query
 
-                for token in tokens:
-                    batch = self.inverted_collections[i].find({'word': token}, no_cursor_timeout=True).limit(300)
-                    for record in batch:
+            tokens = self.query_processor.process(clean_query)
+
+            for token in tokens:
+                batch = self.inverted_collections[i].find({'word': token}, no_cursor_timeout=True).limit(300)
+                for record in batch:
+                    if not self.query_processor.is_qoute(query) or self.query_processor.is_qoute(query) and clean_query in record['neighbours']:
                         if record['url'] in score:
                             score[record['url']] += 1
                             snapits[record['url']] += ', ' + record['neighbours']
                         else:
                             score[record['url']] = 1
                             snapits[record['url']] = record['neighbours']
-                    batch.close()
+                batch.close()
 
         if not self.query_processor.is_qoute(query):
             results = sorted(score.items(), key=operator.itemgetter(1), reverse=True)
