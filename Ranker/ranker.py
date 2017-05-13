@@ -54,21 +54,23 @@ class Ranker:
     def search(self, query):
         print("start")
         query_topic = self.query_processor.get_topic(query)
-        inverted_indexer_urls, snippets = self.inverted_indexer_search(query)
+        inverted_indexer_urls = self.inverted_indexer_search(query)
         same_topic = {}
-        for url in inverted_indexer_urls:
+        urls=[]
+        for url,snippet in inverted_indexer_urls:
             same_topic[url] = False
+            urls.append(url)
         for i in range(4):
             print(i)
-            batch = self.lda_collections[i].find({"c1": query_topic, 'url': {'$in': inverted_indexer_urls}}, no_cursor_timeout=True)
+            batch = self.lda_collections[i].find({"c1": query_topic, 'url': {'$in': urls}}, no_cursor_timeout=True)
             for record in batch:
                 same_topic[record['url']] = True
         lis1 = []
         lis2 = []
-        for url in inverted_indexer_urls:
+        for url,snippet in inverted_indexer_urls:
             if same_topic[url]:
-                lis1.append(url)
+                lis1.append((url,snippet))
             else:
-                lis2.append(url)
+                lis2.append((url,snippet))
 
-        return lis1 + lis2, snippets
+        return lis1 + lis2
