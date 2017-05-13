@@ -26,7 +26,7 @@ class Ranker:
         for i in range(6):
             print("\nFML", i)
             if self.query_processor.is_qoute(query):
-                clean_query = query[1:-2]
+                clean_query = query[1:-1]
             else:
                 clean_query = query
 
