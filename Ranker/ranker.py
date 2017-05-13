@@ -23,9 +23,9 @@ class Ranker:
         snapits = {}
         score = {}
 
-        for i in range(16):
+        for i in range(1):
             if self.query_processor.is_qoute(query):
-                db_results = self.inverted_collections[i].find({'$text': {'$search': query}}, no_cursor_timeout=True).limit(100)
+                db_results = self.inverted_collections[i].find({'$text': {'$search': query}}, no_cursor_timeout=True)
                 for j, record in enumerate(db_results):
                     urls.append((record['url'], record['neighbours']))
                     if j == self.inverted_indexer_results_num / 16:
@@ -58,8 +58,8 @@ class Ranker:
         query_topic = self.query_processor.get_topic(query)
         inverted_indexer_urls = self.inverted_indexer_search(query)
         same_topic = {}
-        urls=[]
-        for url,snippet in inverted_indexer_urls:
+        urls = []
+        for url, snippet in inverted_indexer_urls:
             same_topic[url] = False
             urls.append(url)
         for i in range(4):
@@ -69,10 +69,10 @@ class Ranker:
                 same_topic[record['url']] = True
         lis1 = []
         lis2 = []
-        for url,snippet in inverted_indexer_urls:
+        for url, snippet in inverted_indexer_urls:
             if same_topic[url]:
-                lis1.append((url,snippet))
+                lis1.append((url, snippet))
             else:
-                lis2.append((url,snippet))
+                lis2.append((url, snippet))
 
         return lis1 + lis2
