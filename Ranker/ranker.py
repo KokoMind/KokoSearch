@@ -45,7 +45,7 @@ class Ranker:
                             score[record['url']] = 1
                             snapits[record['url']] = record['neighbours']
 
-        results = sorted(score.items(), key=operator.itemgetter(1))
+        results = sorted(score.items(), key=operator.itemgetter(1), reverse=True)
 
         urls += [url for (url, value) in results][:int(self.inverted_indexer_results_num / 16)]
 
