@@ -59,7 +59,7 @@ def process_image(request):
 
         fs.delete(filename)
 
-        with open('~/lua_install/neuraltalk2-master/vis/vis.json') as data_file:
+        with open('/home/ubuntu/lua_install/neuraltalk2-master/vis/vis.json') as data_file:
             data = json.load(data_file)
 
         query = str(data[0]['caption'])
