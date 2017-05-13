@@ -18,6 +18,7 @@ def index(request):
 def process_query(request):
     if request.method == 'POST' and request.POST['query']:
         start = time.time()
+        print('searching')
         id2word_file = "Ranker/results/results_wordids.txt.bz2"
         corpus = "Ranker/results/results_tfidf.mm"
         model = "Ranker/lda_model/lda.model"
@@ -25,6 +26,7 @@ def process_query(request):
         obj = rank.search(request.POST['query'])
         num_res = len(obj)
         req_time = (start - time.time()) / 1000
+        print('search finished')
         return redirect(results, obj=obj, num_res=num_res, req_time=req_time, query=request.POST['query'])
     return redirect(index)
 
