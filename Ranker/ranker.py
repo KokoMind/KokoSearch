@@ -59,6 +59,7 @@ class Ranker:
         for url in inverted_indexer_urls:
             same_topic[url] = False
         for i in range(4):
+            print(i)
             batch = self.lda_collections[i].find({"c1": query_topic, 'url': {'$in': inverted_indexer_urls}}, no_cursor_timeout=True)
             for record in batch:
                 same_topic[record['url']] = True
