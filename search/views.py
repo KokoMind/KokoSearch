@@ -56,11 +56,11 @@ def process_image(request):
     return redirect(index)
 
 
-def results(request, obj, num_res, req_time, query):
+def results(request, **kwargs):
     return render(request, 'search_results.html',
                   {
-                      'num_res': num_res,
-                      'req_time': req_time,
-                      'query': query,
-                      'links': obj
+                      'num_res': kwargs['num_res'],
+                      'req_time': kwargs['req_time'],
+                      'query': kwargs['query'],
+                      'links': kwargs['obj']
                   })
