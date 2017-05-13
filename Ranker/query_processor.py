@@ -1,4 +1,4 @@
-from .Indexer.utils import *
+from utils import *
 import gensim
 
 

@@ -1,4 +1,4 @@
-from Indexer.utils import *
+from Ranker.utils import *
 
 # from gensim import corpora, models
 

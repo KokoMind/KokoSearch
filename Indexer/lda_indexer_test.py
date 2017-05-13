@@ -1,7 +1,5 @@
-from Indexer.utils import *
 from gensim import corpora, models
-from gensim.models.ldamulticore import  LdaMulticore
-import operator
+
 path="/mnt/results/results_wordids.txt.bz2"
 path2="/mnt/lda/lda.model"
 id2word = corpora.Dictionary.load_from_text(path)
