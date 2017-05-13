@@ -25,7 +25,7 @@ def process_query(request):
         rank = Ranker(_id2word_path=id2word_file, corpus_path=corpus, model_path=model)
         obj = rank.search(request.POST['query'])
         num_res = len(obj)
-        req_time = (start - time.time()) / 1000
+        req_time = (time.time() - start)
         print('search finished')
         return render(request, 'search_results.html',
                       {
