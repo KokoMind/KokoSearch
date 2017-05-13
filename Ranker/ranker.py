@@ -24,7 +24,7 @@ class Ranker:
         score = {}
         hosts = []
 
-        for i in range(6):
+        for i in range(8):
             print("\nFML", i)
             if self.query_processor.is_qoute(query):
                 clean_query = query[1:-1]
