@@ -35,7 +35,7 @@ class Ranker:
 
             for token in tokens:
                 print("\ntoken ", token)
-                batch = self.inverted_collections[i].find({'word': token}, no_cursor_timeout=True).limit(5000)
+                batch = self.inverted_collections[i].find({'word': token}, no_cursor_timeout=True).limit(1000)
                 for record in batch:
                     print('.', end="")
                     if not self.query_processor.is_qoute(query) or self.query_processor.is_qoute(query) and clean_query in record['neighbours']:
