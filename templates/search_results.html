@@ -1,0 +1,124 @@
+{% load staticfiles %}
+
+<html lang="en">
+
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="kokosearch Search engine">
+    <meta name="author" content="Moemen">
+
+    <title>KokoSearch</title>
+
+    <!-- Bootstrap Core CSS -->
+    <link href="{% static 'vendor/bootstrap/css/bootstrap.min.css' %}" rel="stylesheet">
+
+    <!-- Custom Fonts -->
+    <link href="{% static 'vendor/font-awesome/css/font-awesome.min.css' %}" rel="stylesheet" type="text/css">
+    <link href="https://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic" rel="stylesheet" type="text/css">
+    <link href="https://fonts.googleapis.com/css?family=Montserrat:400,700" rel="stylesheet" type="text/css">
+
+    <!-- Theme CSS -->
+    {#    <link href="{% static 'css/grayscale.css' %}" rel="stylesheet">#}
+    <link href="{% static 'css/search_results.css' %}" rel="stylesheet">
+
+    <!-- pagination CSS -->
+    <link href="{% static 'css/simplePagination.css' %}" rel="stylesheet">
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+    <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+    <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+</head>
+
+<body id="page-top" data-spy="scroll" data-target=".navbar-fixed-top">
+
+<div class="container">
+    <div class="row">
+        <div class="col-md-10 col-md-offset-1 header">
+            <h1 class="brand-heading">Koko Search</h1>
+            <p class="intro-text">A Search Engine which brings the whole web between your hands</p>
+        </div>
+    </div>
+</div>
+
+<div class="container">
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="ibox float-e-margins">
+                <div class="ibox-content">
+                    <div class="form-group row">
+                        <form action="{% url 'process_query' %}" method="post">{% csrf_token %}
+                            <div class="col-md-9">
+                                <input type="text" class="form-control" id="searchbox" value="{{ query }}">
+                            </div>
+                            <div class="col-md-1">
+                                <button type="submit" class="btn btn-primary">Search</button>
+                            </div>
+                            <div class="col-md-2">
+                                <button type="button" class="btn btn-primary" id="searchimage" onclick="before_submit();">SEARCH BY IMAGE</button>
+                            </div>
+                        </form>
+                        <form action="{% url 'process_image' %}" method="post" enctype="multipart/form-data" id="image_form">{% csrf_token %}
+                            <div style="height:0px;overflow:hidden">
+                                <input id="id_image" type="file" class="" name="image">
+                            </div>
+                        </form>
+                    </div>
+
+
+                    <h2>{{ num_res }} results found for: <span class="text-navy">"{{ query }}"</span></h2>
+                    <h3>Request time ({{ req_time }} seconds)</h3>
+                    <div class="hr-line-dashed"></div>
+
+                    {% for page in links %}
+                        <div class="paginate">
+                            <div class="search-result">
+                                <h3><a href="#">{{ page.link }}</a></h3>
+                                <a href="#" class="search-link">{{ page.link }}</a>
+                                <p> {{ page.text }} </p>
+                            </div>
+                            <div class="hr-line-dashed"></div>
+                        </div>
+                    {% endfor %}
+
+
+                    <div id="pagination"></div>
+
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Footer -->
+<footer>
+    <div class="container text-center">
+        <p>Copyright &copy; KokoSearch 2017</p>
+    </div>
+</footer>
+
+<!-- jQuery -->
+<script src="{% static 'vendor/jquery/jquery.js' %}"></script>
+
+<!-- Bootstrap Core JavaScript -->
+<script src="{% static 'vendor/bootstrap/js/bootstrap.min.js' %}"></script>
+
+<!-- Plugin JavaScript -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-easing/1.3/jquery.easing.min.js"></script>
+
+<!-- index JavaScript -->
+<script src="{% static 'js/index.js' %}"></script>
+
+<!-- pagination -->
+<script src="{% static 'js/jquery.simplePagination.js' %}"></script>
+
+</body>
+
+</html>

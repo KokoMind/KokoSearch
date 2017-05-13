@@ -20,5 +20,5 @@ from search import views as search_views
 urlpatterns = [
     url(r'^search/', include('search.urls')),
     url(r'^admin/', admin.site.urls),
-    url(r'^', search_views.index),
+    url(r'^$', search_views.index),
 ]
