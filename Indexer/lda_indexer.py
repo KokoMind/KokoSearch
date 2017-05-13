@@ -2,7 +2,6 @@ from inverted_indexer import Indexer
 from gensim.models.ldamulticore import LdaMulticore
 import gensim
 import time
-
 from pymongo import MongoClient
 
 
@@ -41,7 +40,7 @@ class Lda_Indexer(Indexer):
     def _eval_doc(self, doc):
         doc = doc.split()
         new_doc = self._id2word.doc2bow(doc)
-        sorted_probs = sorted(self._lda[new_doc], key=lambda x: x[1])
+        sorted_probs = sorted(self._lda[new_doc], key=lambda x: x[1],reverse=True)
         top_topics = [key for key, _ in sorted_probs[:6]]
         top_topics += [-1] * 5
         return top_topics[:5]
@@ -56,7 +55,6 @@ class Lda_Indexer(Indexer):
 
     def index(self):
         batch = self.crawled.find({'my_id_1': {'$in': [x for x in range(self._read_cnt, self._read_cnt + 999)]}}, no_cursor_timeout=True)
-        print(batch.count())
         while batch.count() > 0:
             start_time = time.time()
             print("-----")
