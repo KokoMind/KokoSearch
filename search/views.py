@@ -5,6 +5,7 @@ import subprocess
 from search.utils import valid_image_mimetype
 import json
 from Ranker.ranker import Ranker
+import time
 
 
 def index(request):
@@ -16,12 +17,15 @@ def index(request):
 
 def process_query(request):
     if request.method == 'POST' and request.POST['query']:
+        start = time.time()
         id2word_file = "Ranker/results/results_wordids.txt.bz2"
         corpus = "Ranker/results/results_tfidf.mm"
         model = "Ranker/lda_model/lda.model"
         rank = Ranker(_id2word_path=id2word_file, corpus_path=corpus, model_path=model)
         obj = rank.search(request.POST['query'])
-        return redirect(results, obj=obj)
+        num_res = len(obj)
+        req_time = (start - time.time()) / 1000
+        return redirect(results, obj=obj, num_res=num_res, req_time=req_time, query=request.POST['query'])
     return redirect(index)
 
 
@@ -50,26 +54,11 @@ def process_image(request):
     return redirect(index)
 
 
-def results(request, obj):
-    num_res = 100
-    req_time = 1.2
-    query = "ElFr5a betr2os m3 dek roomy"
-
-    class Obj:
-        pass
-
-    objs = []
-
-    for i in range(100):
-        ob = Obj()
-        ob.link = "facebook.com"
-        ob.text = "Bootdey is a gallery of free snippets resources templates and utilities for bootstrap css hmtl js framework. Codes for developers and web designers"
-        objs.append(ob)
-
+def results(request, obj, num_res, req_time, query):
     return render(request, 'search_results.html',
                   {
                       'num_res': num_res,
                       'req_time': req_time,
                       'query': query,
-                      'links': objs
+                      'links': obj
                   })

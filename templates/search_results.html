@@ -76,12 +76,12 @@
                     <h3>Request time ({{ req_time }} seconds)</h3>
                     <div class="hr-line-dashed"></div>
 
-                    {% for page in links %}
+                    {% for link, text in links %}
                         <div class="paginate">
                             <div class="search-result">
-                                <h3><a href="#">{{ page.link }}</a></h3>
-                                <a href="#" class="search-link">{{ page.link }}</a>
-                                <p> {{ page.text }} </p>
+                                <h3><a href="#">{{ link }}</a></h3>
+                                <a href="#" class="search-link">{{ link }}</a>
+                                <p> {{ text }} </p>
                             </div>
                             <div class="hr-line-dashed"></div>
                         </div>
