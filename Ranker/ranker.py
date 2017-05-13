@@ -23,7 +23,7 @@ class Ranker:
         snapits = {}
         score = {}
 
-        for i in range(16):
+        for i in range(1):
             if self.query_processor.is_qoute(query):
                 db_results = self.inverted_collections[i].find({'$text': {'$search': query}}, no_cursor_timeout=True).limit(100)
                 for j, record in enumerate(db_results):
