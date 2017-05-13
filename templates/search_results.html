@@ -55,7 +55,7 @@
                     <div class="form-group row">
                         <form action="{% url 'process_query' %}" method="post">{% csrf_token %}
                             <div class="col-md-9">
-                                <input type="text" class="form-control" id="searchbox" value="{{ query }}">
+                                <input type="text" class="form-control" id="searchbox" value="{{ query }}" name="query">
                             </div>
                             <div class="col-md-1">
                                 <button type="submit" class="btn btn-primary">Search</button>
