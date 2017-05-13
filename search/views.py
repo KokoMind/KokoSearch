@@ -49,8 +49,8 @@ def process_image(request):
 
         uploaded_file_url = fs.url(filename)
 
-        # cmd = ['gedit']
-        # subprocess.Popen(cmd).wait()
+        cmd = ['th ~/KokoSearch/kneuraltalk2-master/eval.lua -model model_id1-501-1448236541.t7_cpu.t7 -image_folder ~/KokoSearch/imgs -num_images 10 -gpuid -1']
+        subprocess.Popen(cmd).wait()
 
         fs.delete(filename)
 
