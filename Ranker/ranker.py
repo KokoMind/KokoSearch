@@ -78,4 +78,4 @@ class Ranker:
             else:
                 lis2.append((url, snippet))
 
-        return lis1 + lis2
+        return inverted_indexer_urls
