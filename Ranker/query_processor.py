@@ -37,7 +37,7 @@ class QueryProcessor:
     def get_topic(self, query):
         query = query.split()
         new_query = self._id2word.doc2bow(query)
-        sorted_probs = sorted(self._lda[new_query], key=lambda x: x[1])
+        sorted_probs = sorted(self._lda[new_query], key=lambda x: x[1],reverse=True)
         top_topics = [key for key, _ in sorted_probs[:2]]
         top_topics += [-1] * 5
         return top_topics[0]
