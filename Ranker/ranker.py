@@ -32,7 +32,7 @@ class Ranker:
             tokens = self.query_processor.process(clean_query)
 
             for token in tokens:
-                batch = self.inverted_collections[i].find({'word': token}, no_cursor_timeout=True).limit(300)
+                batch = self.inverted_collections[i].find({'word': token}, no_cursor_timeout=True).limit(700)
                 for record in batch:
                     if not self.query_processor.is_qoute(query) or self.query_processor.is_qoute(query) and clean_query in record['neighbours']:
                         if record['url'] in score:
