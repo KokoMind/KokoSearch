@@ -40,7 +40,7 @@ class Ranker:
                     for record in batch:
                         if record['url'] in score:
                             score[record['url']] += 1
-                            snapits[record['url']] += ' - ' + record['neighbours']
+                            snapits[record['url']] += ', ' + record['neighbours']
                         else:
                             score[record['url']] = 1
                             snapits[record['url']] = record['neighbours']
@@ -48,7 +48,7 @@ class Ranker:
 
         results = sorted(score.items(), key=operator.itemgetter(1), reverse=True)
 
-        urls += [(url, snapits[url]) for (url, value) in results][:int(self.inverted_indexer_results_num / 16)]
+        urls += [(url, snapits[url][:50]) for (url, value) in results][:int(self.inverted_indexer_results_num / 16)]
 
         return urls
 
