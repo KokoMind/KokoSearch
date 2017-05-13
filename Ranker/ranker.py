@@ -33,7 +33,7 @@ class Ranker:
             tokens = self.query_processor.process(clean_query)
 
             for token in tokens:
-                print("token ", token)
+                print("\ntoken ", token)
                 batch = self.inverted_collections[i].find({'word': token}, no_cursor_timeout=True).limit(1000)
                 for record in batch:
                     print('.', end="")
@@ -46,7 +46,7 @@ class Ranker:
                             snapits[record['url']] = record['neighbours']
                 batch.close()
 
-        print('begin sort')
+        print('\nbegin sort')
         results = sorted(score.items(), key=operator.itemgetter(1), reverse=True)
         print('finished sort')
         urls = [(url, snapits[url][:350]) for (url, value) in results][:int(self.inverted_indexer_results_num)]
