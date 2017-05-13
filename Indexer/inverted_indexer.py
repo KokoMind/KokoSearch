@@ -1,6 +1,5 @@
 import time
 from utils import *
-from query_processor import *
 from pymongo import MongoClient
 import threading
 

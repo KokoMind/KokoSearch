@@ -41,7 +41,7 @@ class Lda_Indexer(Indexer):
     def _eval_doc(self, doc):
         doc = doc.split()
         new_doc = self._id2word.doc2bow(doc)
-        sorted_probs = sorted(self._lda[new_doc], key=lambda x: x[1])
+        sorted_probs = sorted(self._lda[new_doc], key=lambda x: x[1],reverse=True)
         top_topics = [key for key, _ in sorted_probs[:6]]
         top_topics += [-1] * 5
         return top_topics[:5]
