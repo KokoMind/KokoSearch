@@ -1,4 +1,4 @@
-from utils import *
+from Ranker.utils import *
 import gensim
 class QueryProcessor:
     def __init__(self, _id2word_path, corpus_path, model_path):

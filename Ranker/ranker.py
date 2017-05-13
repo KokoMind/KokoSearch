@@ -1,5 +1,5 @@
 import gensim
-from query_processor import QueryProcessor
+from Ranker.query_processor import QueryProcessor
 from pymongo import MongoClient
 import operator
 
@@ -25,18 +25,18 @@ class Ranker:
 
         for i in range(16):
             if self.query_processor.is_qoute(query):
-                db_results = self.inverted_collections[i].find({'$text': {'$search': query}}).limit(100)
+                db_results = self.inverted_collections[i].find({'$text': {'$search': query}}, no_cursor_timeout=True).limit(100)
                 for j, record in enumerate(db_results):
-                    urls.append(record['url'])
-                    snapits[record['url']] = record['neighbours']
+                    urls.append((record['url'], record['neighbours']))
                     if j == self.inverted_indexer_results_num / 16:
                         break
+                db_results.close()
 
             else:
                 tokens = self.query_processor.process(query)
 
                 for token in tokens:
-                    batch = self.inverted_collections[i].find({'word': token}).limit(300)
+                    batch = self.inverted_collections[i].find({'word': token}, no_cursor_timeout=True).limit(300)
                     for record in batch:
                         if record['url'] in score:
                             score[record['url']] += 1
@@ -44,12 +44,13 @@ class Ranker:
                         else:
                             score[record['url']] = 1
                             snapits[record['url']] = record['neighbours']
+                    batch.close()
 
         results = sorted(score.items(), key=operator.itemgetter(1), reverse=True)
 
-        urls += [url for (url, value) in results][:int(self.inverted_indexer_results_num / 16)]
+        urls += [(url, snapits[url]) for (url, value) in results][:int(self.inverted_indexer_results_num / 16)]
 
-        return urls, snapits
+        return urls
 
     def search(self, query):
         print("start")
