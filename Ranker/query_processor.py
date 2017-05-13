@@ -1,5 +1,7 @@
 from Ranker.utils import *
 import gensim
+
+
 class QueryProcessor:
     def __init__(self, _id2word_path, corpus_path, model_path):
         self._stemmer = Stemmer()
@@ -11,6 +13,7 @@ class QueryProcessor:
         self._construct_corpus()
         self.model_path = model_path
         self._load_model()
+
     def _construct_corpus(self):
         self._id2word = gensim.corpora.Dictionary.load_from_text(self._id2word_path)
         self._corpus = gensim.corpora.MmCorpus(self._corpus_path)
@@ -35,7 +38,7 @@ class QueryProcessor:
     def get_topic(self, query):
         query = query.split()
         new_query = self._id2word.doc2bow(query)
-        sorted_probs = sorted(self._lda[new_query], key=lambda x: x[1],reverse=True)
+        sorted_probs = sorted(self._lda[new_query], key=lambda x: x[1], reverse=True)
         top_topics = [key for key, _ in sorted_probs[:2]]
         top_topics += [-1] * 5
         return top_topics[0]
