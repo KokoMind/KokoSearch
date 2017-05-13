@@ -25,9 +25,15 @@ def process_query(request):
         rank = Ranker(_id2word_path=id2word_file, corpus_path=corpus, model_path=model)
         obj = rank.search(request.POST['query'])
         num_res = len(obj)
-        req_time = (start - time.time()) / 1000
+        req_time = (time.time() - start)
         print('search finished')
-        return redirect(results, obj=obj, num_res=num_res, req_time=req_time, query=request.POST['query'])
+        return render(request, 'search_results.html',
+                      {
+                          'num_res': num_res,
+                          'req_time': req_time,
+                          'query': request.POST['query'],
+                          'links': obj
+                      })
     return redirect(index)
 
 
@@ -54,13 +60,3 @@ def process_image(request):
         return HttpResponse("Search by image\n" + str(uploaded_file_url) + "\n" + str(data[0]['caption']))
 
     return redirect(index)
-
-
-def results(request, obj, num_res, req_time, query):
-    return render(request, 'search_results.html',
-                  {
-                      'num_res': num_res,
-                      'req_time': req_time,
-                      'query': query,
-                      'links': obj
-                  })
