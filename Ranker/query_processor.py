@@ -1,4 +1,4 @@
-from utils import *
+from Ranker.utils import *
 import gensim
 
 

@@ -1,5 +1,5 @@
 import gensim
-from query_processor import QueryProcessor
+from Ranker.query_processor import QueryProcessor
 from pymongo import MongoClient
 import operator
 
